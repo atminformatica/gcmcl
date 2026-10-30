@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Página Inicial</title>
+</head>
+<body>
+    <h1>Olá, bem-vindo ao site!</h1>
+    
+    <!-- Verifica se o utilizador está logado pelo Google -->
+    {% if user.is_authenticated %}
+        <p>Está conectado como: <strong>{{ user.username }}</strong> ({{ user.email }})</p>
+        <p><a href="{% url 'account_logout' %}">Fazer Logout (Sair)</a></p>
+    {% else %}
+        <p>Não está logado.</p>
+        <p><a href="{% url 'account_login' %}">Ir para o Login</a></p>
+    {% endif %}
+</body>
+</html>
