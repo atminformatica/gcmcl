@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Página Inicial</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Links CDN Corretos do Bootstrap 5.3 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        /* Espaçamento compacto no fundo para smartphones */
+        @media (max-width: 991.98px) {
+            body {
+                padding-bottom: 55px; /* Acompanha a barra inferior menor */
+            }
+        }
+        
+        /* Transição suave para ocultar/mostrar a barra estilo App no Mobile */
+        .bottom-nav-scroll {
+            transition: transform 0.3s ease-in-out;
+        }
+        .bottom-nav-hidden {
+            transform: translateY(100%);
+        }
+
+        /* Estilo para links ativos no menu lateral */
+        .list-group-item-action:hover {
+            background-color: #2b3035 !important;
+            color: #fff !important;
+        }
+
+        /* Texto do menu inferior ultra compacto */
+        .bottom-nav-text {
+            font-size: 0.7rem !important;
+            display: block;
+            font-weight: 500;
+            line-height: 1;
+        }
+        
+        /* Ajuste de tamanho dos ícones inferiores */
+        .bottom-nav-icon {
+            font-size: 1.2rem !important;
+            line-height: 1;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-light d-flex flex-column min-vh-100">
+    <!-- NAVBAR SUPERIOR -->
+    <nav class="navbar navbar-dark bg-dark shadow-sm sticky-top py-2">
+        <div class="container">
+            <!-- Botão Hambúrguer -->
+            {% if user.is_authenticated %}
+            <button class="btn btn-dark border-0 p-2 me-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu">
+                <i class="bi bi-list fs-3"></i>
+            </button>
+            {% endif %}
+            
+            <!-- Logo / Nome do Sistema -->
+            <a class="navbar-brand me-auto ms-1 fs-5 fw-semibold" href="#">
+                <i class="bi bi-box-seam me-2"></i>App
+            </a>
+            
+            <!-- Lado Direito da Barra Superior (Autenticação Allauth) -->
+            <div class="d-flex align-items-center">
+                {% if user.is_authenticated %}
+                    <span class="navbar-text text-white me-3 d-none d-sm-inline">
+                        Olá, <strong>{{ user.username }}</strong>
+                    </span>
+                    <a href="{% url 'account_logout' %}" class="btn btn-outline-light btn-sm d-none d-lg-inline-block">
+                        <i class="bi bi-box-arrow-right me-1"></i>Sair
+                    </a>
+                {% else %}
+                    <a href="{% url 'account_login' %}" class="btn btn-light btn-sm d-none d-lg-inline-block">
+                        <i class="bi bi-box-arrow-in-right me-1"></i>Entrar
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- MENU LATERAL DESLIZANTE (Offcanvas) -->
+    <div class="offcanvas offcanvas-start bg-dark text-white" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
+        <div class="offcanvas-header border-bottom border-secondary p-3">
+            <h5 class="offcanvas-title fs-5" id="sidebarMenuLabel">
+                <i class="bi bi-layers-half me-2"></i>Navegação
+            </h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body p-0">
+            <!-- Usuário Mobile no topo do menu lateral -->
+            {% if user.is_authenticated %}
+                <div class="p-3 bg-secondary bg-opacity-25 border-bottom border-secondary d-sm-none">
+                    <span class="text-white fs-6">Olá, <strong>{{ user.username }}</strong></span>
+                </div>
+            {% endif %}
+            
+            <div class="list-group list-group-flush fs-6">
+                <a href="#" class="list-group-item list-group-item-action bg-dark text-white border-secondary py-3 px-4">
+                    <i class="bi bi-house-door me-3"></i>Início / Dashboard
+                </a>
+                <a href="#" class="list-group-item list-group-item-action bg-dark text-white border-secondary py-3 px-4">
+                    <i class="bi bi-people me-3"></i>Gerenciar Clientes
+                </a>
+                <a href="#" class="list-group-item list-group-item-action bg-dark text-white border-secondary py-3 px-4">
+                    <i class="bi bi-box me-3"></i>Estoque de Produtos
+                </a>
+                <a href="#" class="list-group-item list-group-item-action bg-dark text-white border-secondary py-3 px-4">
+                    <i class="bi bi-gear me-3"></i>Configurações
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTEÚDO PRINCIPAL DINÂMICO -->
+    <main class="container my-4 flex-grow-1">
+        {% if messages %}
+            <div class="row">
+                <div class="col-12">
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        {% block content %}
+            <div class="bg-white p-4 p-md-5 rounded shadow-sm">
+                <h1 class="fs-3 fw-bold">Bem-vindo ao App!</h1>
+            
+                {% if user.is_authenticated %}
+                    <span class="navbar-text text-white me-3 d-none d-sm-inline">
+                        Olá, <strong>{{ user.username }}</strong>
+                    </span>                 
+                {% else %}
+                    <p class="text-muted">Efetue seu login .</p>
+                    <a href="{% url 'account_login' %}" class="btn btn-secondary btn-md d-inline-block">
+                        <i class="bi bi-box-arrow-in-right me-1"></i>Entrar
+                    </a>
+                {% endif %}
+            </div>
+        {% endblock %}
+    </main>
+
+    <!-- RODAPÉ DESKTOP TRADICIONAL -->
+    <footer class="bg-white text-center text-muted py-3 border-top mt-auto d-none d-lg-block">
+        <div class="container">
+            <small>&copy; 2026 Meu Sistema Web Monolito. Todos os direitos reservados.</small>
+        </div>
+    </footer>
+
+    <!-- BARRA DE NAVEGAÇÃO INFERIOR ESTILO APP (Apenas para telas Mobile e Tablet) -->
+    <div id="bottomNav" class="navbar fixed-bottom bg-white border-top shadow d-lg-none bottom-nav-scroll py-1">
+        <div class="container-fluid d-flex justify-content-around text-center">
+            <a href="#" class="nav-link text-primary py-1">
+                <div class="fs-5"><i class="bi bi-house-door-fill"></i></div>
+                <span style="font-size: 0.7rem; display: block; font-weight: 500;">Home</span>
+            </a>
+            
+            <!-- Opção Dinâmica Entrar/Sair baseada no Allauth -->
+            {% if user.is_authenticated %}
+                <a href="{% url 'account_logout' %}" class="nav-link text-danger py-1">
+                    <div class="fs-5"><i class="bi bi-box-arrow-right"></i></div>
+                    <span style="font-size: 0.7rem; display: block; font-weight: 500;">Sair</span>
+                </a>
+            {% else %}
+                <a href="{% url 'account_login' %}" class="nav-link text-success py-1">
+                    <div class="fs-5"><i class="bi bi-box-arrow-in-right"></i></div>
+                    <span style="font-size: 0.7rem; display: block; font-weight: 500;">Entrar</span>
+                </a>
+            {% endif %}
+
+            <!-- Botão que abre o menu no Mobile -->
+            {% if user.is_authenticated %}
+            <button class="nav-link text-muted border-0 bg-transparent mb-0 py-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu">
+                <div class="fs-5"><i class="bi bi-list"></i></div>
+                <span style="font-size: 0.7rem; display: block; font-weight: 500;">Menu</span>
+            </button>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- O SEU LINK SCRIPT CDN QUE ESTAVA A FUNCIONAR -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+
+    <!-- Script de monitorização do scroll para a barra de rodapé -->
+    <script>
+        let lastScrollTop = 0;
+        const bottomNav = document.getElementById('bottomNav');
+
+        window.addEventListener('scroll', function() {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            if (scrollTop > lastScrollTop && scrollTop > 50) {
+                bottomNav.classList.add('bottom-nav-hidden');
+            } else {
+                bottomNav.classList.remove('bottom-nav-hidden');
+            }
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+        });
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -15,7 +15,11 @@ SECRET_KEY =os.getenv('SECRET_KEY') #'django-insecure-qq28_-gw_$b4s+_#)ml-%e(ksr
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+#coloque * em ALLOWED_HOSTS permitir qualquer dispositivo 
+# na rede local acesse essa aplicacao
+#e tem que rodar assim:
+#   python manage.py runserver 0.0.0.0:8000
+ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     #PADRAO NA INSTALACAO DO DJANGO
@@ -124,6 +128,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Em desenvolvimento, isto faz o Django mostrar o email no terminal em vez de tentar enviar de verdade
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# O email que vai aparecer como remetente nos testes
+DEFAULT_FROM_EMAIL = 'alexandreinformatica@yahoo.com.br'
+
 #----AUTENTICACAO COM ALLAUTH
 # Do not add ModelBackend solely for username login in Django admin;
 # its login view is not rate limited.
@@ -131,6 +140,23 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 SITE_ID = 1
+
+# 1. Define COMO o utilizador pode fazer login (Username, Email ou Ambos)
+# Opções possíveis: 'username' | 'email' | 'username_email'
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
+
+# 2. Torna o preenchimento do email obrigatório no registo (Signup)
+ACCOUNT_EMAIL_REQUIRED = True
+
+# 3. Define se o email precisa de ser verificado por link enviado por correio
+# Opções: 'mandatory' (obrigatório) | 'optional' (opcional) | 'none' (nenhuma verificação)
+ACCOUNT_EMAIL_VERIFICATION = 'none'  # Coloque 'none' para testes locais para não travar o login
+
+# Faz o logout acontecer imediatamente sem pedir confirmação
+ACCOUNT_LOGOUT_ON_GET = True
+
+# Garante que o utilizador é enviado para a Home após sair
+ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 
 # LOGIN SOCIAL GOOGLE COM ALLAUTH
 # SOCIALACCOUNT_PROVIDERS = {

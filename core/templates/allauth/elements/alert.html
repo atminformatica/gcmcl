@@ -1,0 +1,12 @@
+{% load allauth %}
+{# O Allauth moderno usa attrs.level para identificar se é um erro, aviso ou sucesso #}
+<div class="alert alert-{% if attrs.level == 'error' or attrs.level == 'danger' %}danger{% elif attrs.level == 'success' %}success{% elif attrs.level == 'warning' %}warning{% else %}info{% endif %} alert-dismissible fade show" role="alert">
+    <h1>OLA ESTOU AQUI ARQUIVO ALERT.HTML</h1>
+    {# Injeta o texto da mensagem de erro/sucesso #}
+    {% slot %}
+    {% endslot %}
+    
+    {# Botão de fechar (X) do Bootstrap #}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+

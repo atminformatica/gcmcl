@@ -1,0 +1,55 @@
+{% load allauth %}
+
+{# Identifica se o campo é um Checkbox olhando para o widget do Django #}
+{% if field.field.widget.input_type == "checkbox" %}
+    
+    <!-- LAYOUT PARA CHECKBOX (Lembrar de mim) -->
+    <div class="form-check mb-3">
+        <input class="form-check-input" 
+               type="checkbox" 
+               name="{{ field.name }}" 
+               id="{{ field.id_for_label }}"
+               {% if field.value %}checked{% endif %}>
+        
+        <label class="form-check-label" for="{{ field.id_for_label }}">
+            {{ field.label }}
+        </label>
+
+        {% if field.errors %}
+            <div class="invalid-feedback d-block small">
+                {% for error in field.errors %}{{ error }}{% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+{% else %}
+
+    <!-- LAYOUT PARA INPUTS FLUTUANTES (E-mail, Senha, etc.) -->
+    <div class="form-floating mb-3">
+        <input class="form-control {% if field.errors %}is-invalid{% endif %}" 
+               {# Força o tipo password se o nome do campo for password, caso contrário usa o tipo do widget ou text #}
+               type="{% if "password" in field.name %}password{% else %}{{ field.field.widget.input_type|default:'text' }}{% endif %}" 
+               name="{{ field.name }}" 
+               id="{{ field.id_for_label }}"
+               placeholder="{{ field.label }}"
+               value="{{ field.value|default:'' }}"
+               {% if field.field.required %}required{% endif %}>
+        
+        <label for="{{ field.id_for_label }}">
+            {{ field.label }}
+        </label>
+        
+        {% if field.help_text %}
+            <div class="form-text text-muted small mt-1">
+                {{ field.help_text }}
+            </div>
+        {% endif %}
+
+        {% if field.errors %}
+            <div class="invalid-feedback d-block small">
+                {% for error in field.errors %}{{ error }}{% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+{% endif %}

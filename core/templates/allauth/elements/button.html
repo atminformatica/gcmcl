@@ -1,0 +1,8 @@
+{% load allauth %}
+<button class="btn btn-primary w-100 my-2" 
+        type="{{ attrs.type|default:'submit' }}"
+        {% if attrs.id %}id="{{ attrs.id }}"{% endif %}
+        {% if attrs.disabled %}disabled{% endif %}>
+    {% slot %}
+    {% endslot %}
+</button>
