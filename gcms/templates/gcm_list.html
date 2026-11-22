@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    GCM Digital 
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <!-- Cabeçalho da Página -->
+        <div class="mb-3 mt-2 d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center  ">
+            <h1 class="fs-4 " style="color: #1ea0ba; text-shadow: 0 0 12px rgba(0, 212, 255, 0.45);">
+                Guardas Municipais
+            </h1>
+            <div class="btn-toolbar ">
+                <a href="{% url 'gcm_create' %}" class="btn btn btn-primary d-flex align-items-center gap-1">
+                    <svg xmlns="http://w3.org" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/></svg>
+                    Novo GCM
+                </a>
+            </div>
+        </div>
+
+        <!-- Formulario de pesquisar -->
+        <div class="card border-0 shadow-sm mb-4 bg-body-tertiary">
+            <div class="card-body">
+                <form method="get" action="{% url 'gcm_list' %}" class="row g-2 align-items-center">
+                    <div class="row g-2 align-items-center">            
+                        <!-- Barra Principal: Título (Ocupa a maior parte do espaço disponível) -->
+                        <div class="col mt-0">
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="pesquisar_nome" placeholder="Pesquisar [nome] ..." value="{{ request.GET.pesquisar_nome }}">
+                                <!-- Botão Pesquisar Rápido (Lupa e Azul) -->
+                                <button type="submit" class="btn btn-secondary">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Botão de Filtros Avançados (Visível em TODOS os ecrãs) -->
+                        <div class="col-auto mt-0">
+                            <button class="btn btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#filtrosAvancados" aria-expanded="false" aria-controls="filtrosAvancados" title="Mais filtros">
+                                <i class="bi bi-sliders"></i> <span class="d-none d-sm-inline">+ Filtros</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- PAINEL DE FILTROS: Escondido por padrão em qualquer tamanho de ecrã -->
+                    <div class="collapse mt-2" id="filtrosAvancados">
+                        <div class="card card-body bg-dark border-secondary border-opacity-50 p-3">
+                            <div class="row g-2">
+                                
+                                <!-- cpf -->
+                                <div class="col-12 col-md-3">
+                                    <input type="text" class="form-control bg-dark text-white border-secondary" name="pesquisar_cpf" placeholder="cpf" value="{{ request.GET.pesquisar_cpf }}">
+                                </div>
+
+                                <!-- identidade -->
+                                <div class="col-12 col-md-3">
+                                    <input type="text" class="form-control bg-dark text-white border-secondary" name="pesquisar_identidade" placeholder="identidade" value="{{ request.GET.identidade }}">
+                                </div>
+
+                                <!-- matricula -->
+                                <div class="col-6 col-md-3">
+                                    <input type="text" class="form-control bg-dark text-white border-secondary" name="pesquisar_matricula" placeholder="matricula" value="{{ request.GET.identidade }}">
+                                </div>
+
+                                <!-- Botão Aplicar Filtros -->
+                                <div class="col-12 col-md-3 d-grid">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="bi bi-search"></i> Pesquisar
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- lista -->
+        <div class="table-responsive d-block">
+            <table class="table table-striped table-bordered text-nowrap">
+                <thead class="text-muted small text-uppercase border-bottom">
+                    <tr>
+                        <th>Nome</th>
+                        <th>Usuário</th>
+                        <th>N.Guerra</th>
+                        
+                        
+                        <th>Telefone</th>
+                        
+                        <th>Ocupação</th>
+                        <th>CPF</th>
+                        
+                        <th>Email</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for gcm in gcms %} 
+                    <tr id="gcm-row-{{ gcm.id }}">                        
+                        <td>{{ gcm.nome }}</td>
+                        <td>{{ gcm.user }}</td>
+                        <td>{{ gcm.nome_guerra }}</td>
+                        
+                        
+                        <td>{{ gcm.telefone|default_if_none:"" }}</td>
+                        
+                        <td>{{ gcm.ocupacao_atual|default_if_none:"" }}</td>
+                        <td>{{ gcm.cpf|default_if_none:"" }}</td>
+                        
+                        <td>{{ gcm.email|default_if_none:"" }}</td>
+                        <td>
+                            {% if perms.gcms.view_gcm %}
+                                <a href="{% url 'gcm_detail' gcm.id %}" class="btn btn-info btn-sm">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                            {% endif %}
+                            {% if perms.gcms.change_gcm %}
+                                <a href="{% url 'gcm_update' gcm.id %}" class="btn btn-warning btn-sm">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                            {% endif %}
+                            {% if perms.gcms.delete_gcm %}
+                                <button type="button" 
+                                        class="btn btn-danger btn-sm"
+                                        hx-delete="{% url 'gcm_delete' gcm.id %}"
+                                        hx-target="#gcm-row-{{ gcm.id }}"
+                                        hx-swap="delete swap:0.3s"
+                                        hx-confirm="Tem certeza que deseja excluir {{ gcm.nome_guerra|default:gcm.nome }}?">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %} 
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+    {% include 'components/_pagination.html' %}
+
+{% endblock %}

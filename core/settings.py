@@ -39,6 +39,9 @@ INSTALLED_APPS = [
 
     # MEUS APPS
     'gcms',
+
+    # adicionados 
+    'django_cotton'
 ]
 
 MIDDLEWARE = [

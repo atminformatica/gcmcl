@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid px-0">
+    <!-- Cabeçalho Original Mantido -->
+    <div class="mb-3 mt-2">
+        <h1 class="fs-4" style="color: #1ea0ba; text-shadow: 0 0 12px rgba(0, 212, 255, 0.45);">
+            Novo Cadastro de GCM
+        </h1>
+    </div>
+
+    <form method="post" class="form" novalidate>
+        {% csrf_token %}
+
+        <!-- LINHA SUPERIOR (Lado a Lado em telas LG) -->
+        <div class="row g-4 mb-4">
+            <!-- 1. DADOS FUNCIONAIS / SISTEMA -->
+            <div class="col-12 col-lg-5">
+                <div class="card h-100 shadow-sm border-0 border-top border-3">
+                    <div class="card-header bg-body-tertiary py-3">
+                        <h2 class="h6 mb-0 fw-bold text-uppercase">
+                            Dados Funcionais e Acesso
+                        </h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <c-_campo_input :field="form.matricula" cols="col-12 col-sm-6" label="Matricula" maxlength="15"/>
+                            <c-_campo_input :field="form.nome_guerra" cols="col-12 col-sm-6" label="Nome Guerra" maxlength="50"/>
+                        </div>
+                        <div class="row">
+                            <c-_campo_input :field="form.ocupacao_atual" cols="col-12 col-sm-6" label="Ocupação atual" maxlength="100"/>
+                            <c-_campo_select :field="form.user" cols="col-12 col-sm-6" label="User">
+                                <option value="">Selecione...</option>
+                                {% for usuario in form.user.field.queryset %}
+                                    <option value="{{ usuario.pk }}" {% if form.user.value|stringformat:"s" == usuario.pk|stringformat:"s" %}selected{% endif %}>
+                                        {{ usuario.username }}
+                                    </option>
+                                {% endfor %}
+                            </c-_campo_select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. DOCUMENTAÇÃO -->
+            <div class="col-12 col-lg-7">
+                <div class="card h-100 shadow-sm border-0 border-top  border-3">
+                    <div class="card-header py-3">
+                        <h2 class="h6 mb-0 fw-bold text-uppercase ">
+                            Documentação
+                        </h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <c-_campo_input :field="form.cpf" cols="col-12 col-md-4" label="CPF" maxlength="14"/>
+                            <c-_campo_input :field="form.identidade" cols="col-12 col-md-4" label="Identidade" maxlength="20"/>
+                            <c-_campo_input :field="form.orgao_expedidor" cols="col-12 col-md-4" label="Órgao Expedidor" maxlength="15"/>
+                        </div>
+                        <div class="row">
+                            <c-_campo_input :field="form.cnh" cols="col-12 col-md-6" label="CNH" maxlength="25"/>
+                            <c-_campo_input :field="form.cnh_vencimento" cols="col-12 col-md-6" label="CNH vencimento" type="date"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. DADOS PESSOAIS -->
+        <div class="card mb-4 shadow-sm border-0 border-top border-3">
+            <div class="card-header bg-body-tertiary py-3">
+                <h2 class="h6 mb-0 fw-bold text-uppercase ">
+                    Dados Pessoais
+                </h2>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <c-_campo_input :field="form.nome" cols="col-12 col-md-6" label="Nome" maxlength="150"/>
+                    <c-_campo_input :field="form.datanascimento" cols="col-12 col-md-2" label="Nascimento" type="date"/>
+                    <c-_campo_select :field="form.sexo" cols="col-12 col-md-2" label="Sexo" empty_label="Selecione..."/>
+                    <c-_campo_input :field="form.tipo_sangue" cols="col-12 col-md-2" label="Tipo Sanguíneo" maxlength="15"/>
+                </div>
+                <div class="row">
+                    <c-_campo_select :field="form.estadocivil" cols="col-12 col-md-3" label="Estado civil" empty_label="Selecione..."/>
+                    <c-_campo_input :field="form.naturalidade" cols="col-12 col-md-3" label="Naturalidade:" maxlength="100"/>
+                    <c-_campo_input :field="form.pai" cols="col-12 col-md-3" label="Pai:" maxlength="150"/>
+                    <c-_campo_input :field="form.mae" cols="col-12 col-md-3" label="Mãe:" maxlength="150"/>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. CONTATO E ENDEREÇO -->
+        <div class="card mb-4 shadow-sm border-0 border-top border-3">
+            <div class="card-header bg-body-tertiary py-3">
+                <h2 class="h6 mb-0 fw-bold text-uppercase ">
+                    Contato e Endereço
+                </h2>
+            </div>
+            <div class="card-body">
+                <!-- Contato -->
+                <div class="row">
+                    <c-_campo_input :field="form.telefone" cols="col-12 col-md-4" label="Telefone" maxlength="15"/>
+                    <c-_campo_input :field="form.email" cols="col-12 col-md-8" label="Email"/>
+                </div>
+
+                <hr class="border-secondary-subtle my-3">
+
+                <!-- Endereço -->
+                <div class="row">
+                    <c-_campo_input :field="form.cep" cols="col-12 col-md-2" label="CEP" maxlength="9"/>
+                    <c-_campo_input :field="form.endereco" cols="col-12 col-md-5" label="Endereço" maxlength="150"/>
+                    <c-_campo_input :field="form.numero" cols="col-12 col-md-2" label="Número" maxlength="10"/>
+                    <c-_campo_input :field="form.complemento" cols="col-12 col-md-3" label="Complemento" maxlength="60"/>
+                </div>
+                <div class="row">
+                    <c-_campo_input :field="form.bairro" cols="col-12 col-md-5" label="Bairro" maxlength="60"/>
+                    <c-_campo_input :field="form.cidade" cols="col-12 col-md-5" label="Cidade" maxlength="60"/>
+                    <c-_campo_input :field="form.uf" cols="col-12 col-md-2" label="u:" maxlength="2"/>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. CURSOS E FORMAÇÃO -->
+        <div class="card mb-4 shadow-sm border-0 border-top border-3">
+            <div class="card-header bg-body-tertiary py-3">
+                <h2 class="h6 mb-0 fw-bold text-uppercase ">
+                    Cursos e Formação
+                </h2>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <c-_campo_input :field="form.escolaridade" cols="col-12 col-md-4" label="Escolaridade" maxlength="50"/>
+                </div>
+                <div class="row">
+                    <!-- cursos -->
+                    <div class="col-12 col-md-12 mb-4 position-relative">
+                        <div class="form-floating">
+                            <textarea placeholder="{{ form.cursos.label }}" id="{{ form.cursos.id_for_label }}"
+                                      name="{{ form.cursos.html_name }}"
+                                      class="form-control {% if form.cursos.errors %}is-invalid{% endif %}"
+                                      style="height: 110px;"
+                            >{{ form.cursos.value|default_if_none:'' }}</textarea>
+                            <label for="{{ form.cursos.id_for_label }}" class="form-label mb-0"><small>Cursos:</small></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Barra de Ações Original Mantida -->
+        <div class="sticky-bottom bg-body border-top py-3 mt-4 d-flex justify-content-start gap-2 shadow-sm">
+            <button type="submit" class="btn btn-success">Salvar</button>
+            <a href="{% url 'gcm_list' %}" class="btn btn-danger">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

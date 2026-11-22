@@ -1,1 +1,291 @@
 {% extends "base.html" %}
+
+{% block content %}
+<!-- Cabeçalho da Página -->
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Funcionários</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a href="#" class="btn btn-sm btn-primary d-flex align-items-center gap-1">
+            <svg xmlns="http://w3.org" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/></svg>
+            Novo Cadastro
+        </a>
+    </div>
+</div>
+
+<!-- Filtros de Busca Avançados -->
+<!-- CORREÇÃO: Alterado 'bg-light' para 'bg-body-tertiary' para escurecer dinamicamente no dark mode -->
+<div class="card border-0 shadow-sm mb-4 bg-body-tertiary">
+    <div class="card-body">
+        <form method="GET" class="row g-2 align-items-center">
+            <div class="col-md-6 col-lg-7">
+                <div class="input-group">
+                    <!-- CORREÇÃO: Removido 'bg-white' do span para herdar a cor do tema automaticamente -->
+                    <span class="input-group-text text-muted">
+                        <svg xmlns="http://w3.org" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1.5 1.5 0 0 0 2.122-2.122l-3.85-3.85a1.5 1.5 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/></svg>
+                    </span>
+                    <input type="text" name="q" class="form-control border-start-0" placeholder="Buscar por nome, CPF ou cidade...">
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-3">
+                <select name="status" class="form-select">
+                    <option value="">Todos os Status</option>
+                    <option value="ativo">Ativo</option>
+                    <option value="inativo">Inativo</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-secondary w-100">Filtrar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Tabela de Dados (Dentro de um Card do Bootstrap) -->
+<div class="card border-0 shadow-sm">
+    <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle mb-0">
+                <!-- CORREÇÃO: Alterado 'table-light' para 'table-group-divider' ou simplesmente removido para respeitar o tema global do dark mode -->
+                <thead class="text-muted small text-uppercase border-bottom">
+                    <tr>
+                        <th scope="col" class="ps-3" style="width: 100px;">ID</th>
+                        <th scope="col">Utilizador</th>
+                        <th scope="col">E-mail</th>
+                        <th scope="col">Função</th>
+                        <th scope="col">Status</th>
+                        <th scope="col" class="text-end pe-3">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Linha 1 -->
+                    <tr>
+                        <td class="ps-3 fw-medium text-muted">#1024</td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <img src="https://unsplash.com" width="32" height="32" class="rounded-circle" alt="Avatar">
+                                <!-- CORREÇÃO: Alterado 'text-dark' para 'text-body' para o nome ficar branco no dark mode -->
+                                <span class="fw-semibold text-body">Ana Silva</span>
+                            </div>
+                        </td>
+                        <td>ana.silva@email.com</td>
+                        <td><span class="badge bg-primary-subtle text-primary fw-medium px-2.5 py-1.5">Administrador</span></td>
+                        <td><span class="badge bg-success-subtle text-success fw-medium px-2.5 py-1.5">Ativo</span></td>
+                        <td class="text-end pe-3">
+                            <!-- CORREÇÃO: Alterado 'btn-light' para 'btn-secondary' com opacidade/subtle ou mantido apenas como botões normais para não estourarem em branco -->
+                            <button class="btn btn-sm btn-outline-secondary border me-1" title="Editar"><i class="bi bi-pencil text-muted"></i></button>
+                            <button class="btn btn-sm btn-outline-secondary border text-danger" title="Eliminar"><i class="bi bi-trash"></i></button>
+                        </td>
+                    </tr>
+
+                    <!-- Linha 2 -->
+                    <tr>
+                        <td class="ps-3 fw-medium text-muted">#1025</td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <img src="https://unsplash.com" width="32" height="32" class="rounded-circle" alt="Avatar">
+                                <span class="fw-semibold text-body">Carlos Santos</span>
+                            </div>
+                        </td>
+                        <td>carlos.santos@email.com</td>
+                        <td><span class="badge bg-secondary-subtle text-secondary fw-medium px-2.5 py-1.5">Editor</span></td>
+                        <td><span class="badge bg-success-subtle text-success fw-medium px-2.5 py-1.5">Ativo</span></td>
+                        <td class="text-end pe-3">
+                            <button class="btn btn-sm btn-outline-secondary border me-1" title="Editar"><i class="bi bi-pencil text-muted"></i></button>
+                            <button class="btn btn-sm btn-outline-secondary border text-danger" title="Eliminar"><i class="bi bi-trash"></i></button>
+                        </td>
+                    </tr>
+
+                    <!-- Linha 3 -->
+                    <tr>
+                        <td class="ps-3 fw-medium text-muted">#1026</td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <img src="https://unsplash.com" width="32" height="32" class="rounded-circle" alt="Avatar">
+                                <span class="fw-semibold text-body">Mariana Costa</span>
+                            </div>
+                        </td>
+                        <td>mariana.costa@email.com</td>
+                        <td><span class="badge bg-secondary-subtle text-secondary fw-medium px-2.5 py-1.5">Editor</span></td>
+                        <td><span class="badge bg-warning-subtle text-warning fw-medium px-2.5 py-1.5">Pendente</span></td>
+                        <td class="text-end pe-3">
+                            <button class="btn btn-sm btn-outline-secondary border me-1" title="Editar"><i class="bi bi-pencil text-muted"></i></button>
+                            <button class="btn btn-sm btn-outline-secondary border text-danger" title="Eliminar"><i class="bi bi-trash"></i></button>
+                        </td>
+                    </tr>
+
+                    <!-- Linha 4 -->
+                    <tr>
+                        <td class="ps-3 fw-medium text-muted">#1027</td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <img src="https://unsplash.com" width="32" height="32" class="rounded-circle" alt="Avatar">
+                                <span class="fw-semibold text-body">Pedro Almeida</span>
+                            </div>
+                        </td>
+                        <td>pedro.almeida@email.com</td>
+                        <td><span class="badge bg-info-subtle text-info fw-medium px-2.5 py-1.5">Suporte</span></td>
+                        <td><span class="badge bg-success-subtle text-success fw-medium px-2.5 py-1.5">Ativo</span></td>
+                        <td class="text-end pe-3">
+                            <button class="btn btn-sm btn-outline-secondary border me-1" title="Editar"><i class="bi bi-pencil text-muted"></i></button>
+                            <button class="btn btn-sm btn-outline-secondary border text-danger" title="Eliminar"><i class="bi bi-trash"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+    </div>
+</div>
+
+<p></p>
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">{% if form.instance.pk %}Editar Funcionário{% else %}Novo Funcionário{% endif %}</h1>
+    <a href="#" class="btn btn-sm btn-outline-secondary">Voltar para a Lista</a>
+</div>
+
+<div class="row">
+    <div class="col-lg-12 mx-auto">
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body p-4">
+                <form method="POST" class="needs-validation" novalidate>
+                    {% csrf_token %}
+
+                    <!-- Seção 1: Dados Principais -->
+                    <h5 class="mb-3 text-primary pb-2 border-bottom">Informações Pessoais</h5>
+                    <div class="row g-3 mb-4">
+                        
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" name="nome" id="id_nome" class="form-control {% if form.nome.errors %}is-invalid{% endif %}" placeholder="Nome Completo" required value="{{ form.nome.value|default:'' }}">
+                                <label for="id_nome">Nome Completo</label>
+                                {% if form.nome.errors %}
+                                    <div class="invalid-feedback d-block small">{% for error in form.nome.errors %}{{ error }}{% endfor %}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-floating">
+                                <input type="text" name="cpf" id="id_cpf" class="form-control {% if form.cpf.errors %}is-invalid{% endif %}" placeholder="000.000.000-00" value="{{ form.cpf.value|default:'' }}">
+                                <label for="id_cpf">CPF</label>
+                                {% if form.cpf.errors %}
+                                    <div class="invalid-feedback d-block small">{% for error in form.cpf.errors %}{{ error }}{% endfor %}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-floating">
+                                <input type="date" name="datanascimento" id="id_datanascimento" class="form-control {% if form.datanascimento.errors %}is-invalid{% endif %}" placeholder="Data de Nascimento" value="{{ form.datanascimento.value|default:'' }}">
+                                <label for="id_datanascimento">Data de Nascimento</label>
+                                {% if form.datanascimento.errors %}
+                                    <div class="invalid-feedback d-block small">{% for error in form.datanascimento.errors %}{{ error }}{% endfor %}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="email" name="email" id="id_email" class="form-control {% if form.email.errors %}is-invalid{% endif %}" placeholder="nome@provedor.com" value="{{ form.email.value|default:'' }}">
+                                <label for="id_email">E-mail</label>
+                                {% if form.email.errors %}
+                                    <div class="invalid-feedback d-block small">{% for error in form.email.errors %}{{ error }}{% endfor %}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="text" name="telefone" id="id_telefone" class="form-control {% if form.telefone.errors %}is-invalid{% endif %}" placeholder="(00) 00000-0000" value="{{ form.telefone.value|default:'' }}">
+                                <label for="id_telefone">Telefone / WhatsApp</label>
+                                {% if form.telefone.errors %}
+                                    <div class="invalid-feedback d-block small">{% for error in form.telefone.errors %}{{ error }}{% endfor %}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <select name="user" id="id_user" class="form-select {% if form.user.errors %}is-invalid{% endif %}">
+                                    <option value="">Selecione um usuário...</option>
+                                    {% for user in users %}
+                                        <option value="{{ user.id }}" {% if form.user.value == user.id %}selected{% endif %}>{{ user.username }}</option>
+                                    {% endfor %}
+                                </select>
+                                <label for="id_user">Usuário Vinculado</label>
+                                {% if form.user.errors %}
+                                    <div class="invalid-feedback d-block small">{% for error in form.user.errors %}{{ error }}{% endfor %}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Seção 2: Endereço -->
+                    <h5 class="mb-3 text-primary pb-2 border-bottom">Endereço Residencial</h5>
+                    <div class="row g-3 mb-4">
+                        
+                        <div class="col-md-3">
+                            <div class="form-floating">
+                                <input type="text" name="cep" id="id_cep" class="form-control {% if form.cep.errors %}is-invalid{% endif %}" placeholder="00000-000" value="{{ form.cep.value|default:'' }}">
+                                <label for="id_cep">CEP</label>
+                                {% if form.cep.errors %}
+                                    <div class="invalid-feedback d-block small">{% for error in form.cep.errors %}{{ error }}{% endfor %}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="col-md-7">
+                            <div class="form-floating">
+                                <input type="text" name="endereco" id="id_endereco" class="form-control {% if form.endereco.errors %}is-invalid{% endif %}" placeholder="Rua / Logradouro" value="{{ form.endereco.value|default:'' }}">
+                                <label for="id_endereco">Rua / Logradouro</label>
+                                {% if form.endereco.errors %}
+                                    <div class="invalid-feedback d-block small">{% for error in form.endereco.errors %}{{ error }}{% endfor %}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="form-floating">
+                                <input type="text" name="numero" id="id_numero" class="form-control {% if form.numero.errors %}is-invalid{% endif %}" placeholder="Número" value="{{ form.numero.value|default:'' }}">
+                                <label for="id_numero">Número</label>
+                                {% if form.numero.errors %}
+                                    <div class="invalid-feedback d-block small">{% for error in form.numero.errors %}{{ error }}{% endfor %}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="col-md-5">
+                            <div class="form-floating">
+                                <input type="text" name="cidade" id="id_cidade" class="form-control {% if form.cidade.errors %}is-invalid{% endif %}" placeholder="Cidade" value="{{ form.cidade.value|default:'' }}">
+                                <label for="id_cidade">Cidade</label>
+                                {% if form.cidade.errors %}
+                                    <div class="invalid-feedback d-block small">{% for error in form.cidade.errors %}{{ error }}{% endfor %}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-floating">
+                                <input type="text" name="bairro" id="id_bairro" class="form-control {% if form.bairro.errors %}is-invalid{% endif %}" placeholder="Bairro" value="{{ form.bairro.value|default:'' }}">
+                                <label for="id_bairro">Bairro</label>
+                                {% if form.bairro.errors %}
+                                    <div class="invalid-feedback d-block small">{% for error in form.bairro.errors %}{{ error }}{% endfor %}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="text" name="complemento" id="id_complemento" class="form-control {% if form.complemento.errors %}is-invalid{% endif %}" placeholder="Apto, Bloco..." value="{{ form.complemento.value|default:'' }}">
+                                <label for="id_complemento">Complemento</label>
+                                {% if form.complemento.errors %}
+                                    <div class="invalid-feedback d-block small">{% for error in form.complemento.errors %}{{ error }}{% endfor %}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

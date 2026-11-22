@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4 mb-5">    
+    <!-- Cabeçalho da Ficha -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-0">
+                {{ object.nome_guerra|default:object.nome }}
+                <span class="badge bg-primary fs-6 ms-2">Matrícula: {{ object.matricula }}</span>
+            </h2>
+            <small class="text-muted">{{ object.nome }} • Usuário: {{ object.user }}</small>
+        </div>        
+    </div>
+
+    <div class="row g-4">
+        
+        <!-- Card 1: Dados Pessoais e Filiação -->
+        <div class="col-md-6">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header fw-bold">Dados Pessoais</div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <small class="text-muted d-block">Data de Nascimento</small>
+                            <strong>{{ object.datanascimento|date:"d/m/Y"|default:"-" }}</strong>
+                        </div>
+                        <div class="col-sm-6">
+                            <small class="text-muted d-block">Sexo</small>
+                            <strong>{{ object.get_sexo_display|default:"-" }}</strong>
+                        </div>
+                        <div class="col-sm-6">
+                            <small class="text-muted d-block">Estado Civil</small>
+                            <strong>{{ object.get_estadocivil_display|default:"-" }}</strong>
+                        </div>
+                        <div class="col-sm-6">
+                            <small class="text-muted d-block">Tipo Sanguíneo</small>
+                            <span class="badge bg-danger">{{ object.tipo_sangue|default:"Não inf." }}</span>
+                        </div>
+                        <div class="col-12">
+                            <small class="text-muted d-block">Naturalidade</small>
+                            <strong>{{ object.naturalidade|default:"-" }}</strong>
+                        </div>
+                        <div class="col-sm-6">
+                            <small class="text-muted d-block">Nome do Pai</small>
+                            <span>{{ object.pai|default:"-" }}</span>
+                        </div>
+                        <div class="col-sm-6">
+                            <small class="text-muted d-block">Nome da Mãe</small>
+                            <span>{{ object.mae|default:"-" }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2: Documentação -->
+        <div class="col-md-6">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header fw-bold">Documentação</div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <small class="text-muted d-block">CPF</small>
+                            <strong>{{ object.cpf|default:"-" }}</strong>
+                        </div>
+                        <div class="col-sm-6">
+                            <small class="text-muted d-block">Identidade (RG) / Órgão</small>
+                            <strong>{{ object.identidade|default:"-" }}</strong> 
+                            {% if object.orgao_expedidor %}({{ object.orgao_expedidor }}){% endif %}
+                        </div>
+                        <div class="col-sm-6">
+                            <small class="text-muted d-block">CNH</small>
+                            <strong>{{ object.cnh|default:"-" }}</strong>
+                        </div>
+                        <div class="col-sm-6">
+                            <small class="text-muted d-block">Vencimento da CNH</small>
+                            <strong>{{ object.cnh_vencimento|date:"d/m/Y"|default:"-" }}</strong>
+                        </div>
+                        <div class="col-sm-6">
+                            <small class="text-muted d-block">Escolaridade</small>
+                            <span>{{ object.escolaridade|default:"-" }}</span>
+                        </div>
+                        <div class="col-sm-6">
+                            <small class="text-muted d-block">Ocupação Atual</small>
+                            <span>{{ object.ocupacao_atual|default:"-" }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3: Contato e Endereço -->
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header  fw-bold">Contato e Endereço</div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <small class="text-muted d-block">Telefone</small>
+                            <strong>{{ object.telefone|default:"-" }}</strong>
+                        </div>
+                        <div class="col-md-8">
+                            <small class="text-muted d-block">E-mail</small>
+                            <strong>{{ object.email|default:"-" }}</strong>
+                        </div>
+                        <div class="col-12"><hr class="my-1"></div>
+                        <div class="col-md-6">
+                            <small class="text-muted d-block">Logradouro</small>
+                            <span>{{ object.endereco }}, {{ object.numero }} {% if object.complemento %}- {{ object.complemento }}{% endif %}</span>
+                        </div>
+                        <div class="col-md-3">
+                            <small class="text-muted d-block">Bairro</small>
+                            <span>{{ object.bairro|default:"-" }}</span>
+                        </div>
+                        <div class="col-md-3">
+                            <small class="text-muted d-block">CEP</small>
+                            <span>{{ object.cep|default:"-" }}</span>
+                        </div>
+                        <div class="col-md-6">
+                            <small class="text-muted d-block">Cidade / UF</small>
+                            <span>{{ object.cidade }} / {{ object.uf }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 4: Cursos e Qualificações -->
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header  fw-bold">Cursos e Formação</div>
+                <div class="card-body">
+                    {% if object.cursos %}
+                        <p class="mb-0" style="white-space: pre-line;">{{ object.cursos }}</p>
+                    {% else %}
+                        <span class="text-muted fst-italic">Nenhum curso registrado.</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="sticky-bottom bg-body border-top py-3 mt-4 d-flex justify-content-start gap-2 shadow-sm">
+        {% if perms.gcms.change_gcm %}
+            <a href="{% url 'gcm_update' object.pk %}" class="btn btn-warning">
+                <i class="bi bi-pencil-square me-1"></i> Editar
+            </a>
+        {% endif %}
+        <a href="{% url 'gcm_list' %}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left me-1"></i> Voltar
+        </a>
+    </div>
+</div>
+
+
+{% endblock %}

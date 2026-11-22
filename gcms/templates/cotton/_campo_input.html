@@ -1,0 +1,61 @@
+<c-vars 
+    field 
+    cols="col-12 col-md-4" 
+    label="" 
+/>
+
+<div class="{{ cols }} mb-4 position-relative">
+    <div class="form-floating">
+        <input 
+            id="{{ field.id_for_label }}"
+            name="{{ field.html_name }}"
+            value="{{ field.value|default_if_none:'' }}"
+            placeholder="{{ label|default:field.label }}"
+            class="form-control {% if field.errors %}is-invalid{% endif %}"
+            {% if field.field.required %}required{% endif %}
+            {{ attrs }}
+        >
+        <label for="{{ field.id_for_label }}" class="form-label mb-0">
+            <small>{{ label|default:field.label }}:</small>
+        </label>
+    </div>
+
+    {% if field.errors %}
+        <div class="invalid-feedback d-block position-absolute mt-0" style="font-size: 0.78rem;">
+            {% for error in field.errors %}{{ error }}{% endfor %}
+        </div>
+    {% elif field.help_text %}
+        <div class="form-text text-muted position-absolute mt-0" style="font-size: 0.78rem;">
+            {{ field.help_text }}
+        </div>
+    {% endif %}
+</div>
+
+{% comment %} exemplos de uso 
+
+<div class="row">
+    <c-_campo_input :field="form.cpf" cols="col-12" label="CPF:" maxlength="14"/>
+</div> 
+
+<div class="row">
+    <!-- Uso padrão (assume col-12 col-md-4 e o label definido no Django Form) -->
+    <c-input-field :field="form.nome" />
+
+    <!-- Alterando colunas e passando atributos extras (ex: type, maxlength, autocomplete) -->
+    <c-input-field 
+        :field="form.email" 
+        cols="col-12 col-md-8" 
+        type="email" 
+        autocomplete="off" 
+    />
+
+    <!-- Sobrescrevendo o texto do label e adicionando máscara/atributos customizados -->
+    <c-input-field 
+        :field="form.cpf" 
+        cols="col-12 col-md-6" 
+        label="CPF do Titular" 
+        maxlength="14" 
+        data-mask="000.000.000-00" 
+    />
+</div> {% endcomment %}
+
