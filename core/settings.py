@@ -146,10 +146,12 @@ SITE_ID = 1
 
 # 1. Define COMO o utilizador pode fazer login (Username, Email ou Ambos)
 # Opções possíveis: 'username' | 'email' | 'username_email'
-ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
+# ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
+ACCOUNT_LOGIN_METHODS = {'username', 'email'}
 
 # 2. Torna o preenchimento do email obrigatório no registo (Signup)
-ACCOUNT_EMAIL_REQUIRED = True
+# ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
 
 # 3. Define se o email precisa de ser verificado por link enviado por correio
 # Opções: 'mandatory' (obrigatório) | 'optional' (opcional) | 'none' (nenhuma verificação)
