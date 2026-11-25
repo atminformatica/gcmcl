@@ -14,7 +14,7 @@ class GcmListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     paginate_by = 10
     permission_required = 'gcms.view_gcm'
 
-    def get_queryset(self):
+    def get_queryset(self):        
         queryset = super().get_queryset()
         pesquisar_nome = self.request.GET.get('pesquisar_nome')
         pesquisar_cpf = self.request.GET.get('pesquisar_cpf')
@@ -43,6 +43,8 @@ class GcmListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
         context['usuarios'] = User.objects.all()
 
         return context
+
+
 
 class GcmCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = models.Gcm
