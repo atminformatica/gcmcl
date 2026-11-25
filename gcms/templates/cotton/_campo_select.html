@@ -10,7 +10,7 @@
         <select 
             id="{{ field.id_for_label }}" 
             name="{{ field.html_name }}" 
-            class="form-select {% if field.errors %}is-invalid{% endif %}"
+            class="text-uppercase form-select {% if field.errors %}is-invalid{% endif %}"
             {% if field.field.required %}required{% endif %}
             {{ attrs }}
         >

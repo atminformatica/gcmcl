@@ -1,7 +1,7 @@
 # from django.db import models
 # from django.contrib.auth.models import User 
 
-# class GCM(models.Model):
+# class Gcm(models.Model):
 #     OPCOES_SEXO = [
 #         ('MASCULINO', 'Masculino'),
 #         ('FEMININO', 'Feminino'),
@@ -25,6 +25,7 @@
 #     )
 #     nome = models.CharField(max_length=150, verbose_name='NOME')
 #     nome_guerra = models.CharField(max_length=50, verbose_name='NOME GUERRA')
+#     matricula = models.CharField(max_length=15, verbose_name='MATRICULA')
 #     sexo = models.CharField(max_length=10, choices=OPCOES_SEXO, blank=True, null=True, verbose_name='SEXO')
 #     pai = models.CharField(blank=True, null=True, max_length=150, verbose_name='PAI')
 #     mae = models.CharField(blank=True, null=True, max_length=150, verbose_name='MÃE')
@@ -44,7 +45,6 @@
 #         blank=True, 
 #         null=True,
 #         verbose_name='ESTADO CIVIL',
-#         default='SOLTEIRO'
 #     )
 #     ocupacao_atual = models.CharField(blank=True, null=True, max_length=100,verbose_name='OCUPAÇÃO ATUAL')
 #     cpf = models.CharField(blank=True, null=True, max_length=14, unique=True, verbose_name='CPF')
@@ -66,6 +66,7 @@
 
 #     def __str__(self):
 #         return self.nome
+
 
 
 # class Envolvido(models.Model):
@@ -197,7 +198,7 @@
 
 # #----------- RELATOR --------------------------------------------------------------------------
 #     # Agora aponta diretamente para o modelo GCM cadastrado
-#     relatornome = models.ForeignKey(
+#     relatorgcm = models.ForeignKey(
 #         'GCM', 
 #         on_delete=models.PROTECT, 
 #         related_name='boletins_relatados', 
@@ -206,8 +207,8 @@
 #         null=True
 #     )
 #     # relatorcargo e relator documento será preenchido automaticamente via HTMX no template
-#     relatorcargo = models.CharField(blank=True, null=True, max_length=50, verbose_name='CARGO DO RELATOR')
-#     relatordocumento = models.CharField(blank=True, null=True, max_length=50, verbose_name='DOCUMENTO DO RELATOR')
+#     relator_ocupacao_atual = models.CharField(blank=True, null=True, max_length=50, verbose_name='CARGO DO RELATOR')
+#     relator_documento = models.CharField(blank=True, null=True, max_length=50, verbose_name='DOCUMENTO DO RELATOR')
 #     coordenar_turno = models.ForeignKey(
 #         'GCM', 
 #         on_delete=models.PROTECT, 
