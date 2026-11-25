@@ -1,8 +1,19 @@
 from django.contrib import admin
+from django.db import models
+from django import forms
 from .models import Gcm
 
 @admin.register(Gcm)
 class GcmAdmin(admin.ModelAdmin):
+     # Deixa todos os inputs de texto (CharField) visualmente em MAIÚSCULO no Admin
+    formfield_overrides = {
+        models.CharField: {
+            'widget': forms.TextInput(attrs={'style': 'text-transform: uppercase;'})
+        },
+        models.TextField: {
+            'widget': forms.Textarea(attrs={'style': 'text-transform: uppercase;'})
+        },
+    }
     # Colunas exibidas na listagem principal
     list_display = ('nome_guerra', 'nome', 'cpf', 'telefone', 'tipo_sangue', 'cnh_vencimento')
     

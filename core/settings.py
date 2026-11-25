@@ -1,3 +1,4 @@
+# Para que o <input type="datetime-local"> carregue corretamente o valor do banco na tela de edição (UpdateView), no seu settings.py verifique se USE_L10N não está sobrescrevendo o formato ISO, ou garanta que a view passe o dado no formato YYYY-MM-DDTHH:MM (o format='%Y-%m-%dT%H:%M' que já coloquei nos widgets acima resolve isso na maioria dos casos).
 from pathlib import Path
 from dotenv import load_dotenv
 import os
@@ -39,6 +40,7 @@ INSTALLED_APPS = [
 
     # MEUS APPS
     'gcms',
+    'boletim',
 
     # adicionados 
     'django_cotton'
