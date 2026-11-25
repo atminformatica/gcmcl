@@ -219,6 +219,8 @@ class Boletim(models.Model):
     )
     numero_boletim = models.CharField(
         max_length=15,
+        blank=True,
+        null=True,
         unique=True,
         db_index=True,
         verbose_name='Boletim Nº'
@@ -333,6 +335,12 @@ class Boletim(models.Model):
             self.numero_reds = self.numero_reds.strip().upper()
         else:
             self.numero_reds = None
+
+        if self.numero_boletim:
+            self.numero_boletim = self.numero_boletim.strip().upper()
+        else:
+            self.numero_boletim = None
+
 
         super().save(*args, **kwargs)
 
