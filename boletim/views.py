@@ -6,6 +6,10 @@ from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.db.models import Q
 
+from django.views import View
+from django.shortcuts import redirect, get_object_or_404
+from django.utils import timezone
+from django.contrib import messages
 
 class BoletimListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = models.Boletim
@@ -92,3 +96,56 @@ class BoletimDetailView(LoginRequiredMixin, DetailView):
                 'veiculos_associados__veiculo',
             )
         )
+
+class BoletimIniciarView(LoginRequiredMixin, View):
+    # Cria o BI em andamento (sem número boletim ainda) e abre direto a tela de edição.
+    def get(self, request, *args, **kwargs):
+        gcm_logado = getattr(request.user, 'gcm_profile', None)
+
+        boletim = models.Boletim.objects.create(
+            status='EM_ANDAMENTO',
+            data_hora_inicio=timezone.now(),
+            relatorgcm=gcm_logado,
+            relator_ocupacao_atual=gcm_logado.ocupacao_atual if gcm_logado else '',
+            relator_documento=gcm_logado.matricula if gcm_logado else '',
+        )
+        return redirect('boletim:boletim_update', pk=boletim.pk)
+
+class BoletimUpdateView(LoginRequiredMixin, UpdateView):
+    model = models.Boletim
+    form_class = forms.BoletimForm
+    template_name = 'boletim_update.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['envolvimentos'] = self.object.envolvimentos.select_related('envolvido').all()
+        context['veiculos_associados'] = self.object.veiculos_associados.select_related('veiculo').all()
+        return context
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Boletim salvo com sucesso!')
+        return super().form_valid(form)
+    
+    # usamos esse meto poque precisamos passar a pk para a rota update por 
+    # issao nao usamos o success_url = reverse_lazy('boletim_list')
+    def get_success_url(self):
+        return reverse_lazy('boletim:boletim_update', kwargs={'pk': self.object.pk})
+
+class BoletimCancelarView(LoginRequiredMixin, View):
+    # """Apaga o boletim APENAS se nunca foi salvo e não tem envolvidos/veículos.
+    # Caso contrário, preserva o progresso e apenas volta para a lista."""
+    def post(self, request, pk, *args, **kwargs):
+        boletim = get_object_or_404(models.Boletim, pk=pk)
+
+        ja_foi_salvo = (boletim.updated_at - boletim.created_at).total_seconds() > 1
+        tem_vinculos = boletim.envolvimentos.exists() or boletim.veiculos_associados.exists()
+
+        if ja_foi_salvo or tem_vinculos:
+            # Preserva o que o GCM já preencheu e apenas sai da tela
+            messages.info(request, 'Edição cancelada pelo usuário.')
+        else:
+            # Nunca foi salvo e não tem nada vinculado: descarta do banco
+            boletim.delete()
+            messages.info(request, 'Boletim vazio foi descartado.')
+
+        return redirect('boletim:boletim_list')
