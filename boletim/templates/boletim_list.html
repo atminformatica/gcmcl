@@ -1,0 +1,235 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    GCM Digital 
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <!-- Cabeçalho da Página -->
+        <div class="mb-3 mt-2 d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center">
+            <h1 class="fs-4" style="color: #1ea0ba; text-shadow: 0 0 12px rgba(0, 212, 255, 0.45);">
+                BOLETIM DE OCORRÊNCIA / INTERVENÇÃO                
+            </h1>
+            
+            <div class="btn-toolbar">
+                <a href="{% url 'boletim_list' %}" class="btn btn-primary d-flex align-items-center gap-1">
+                    <svg xmlns="http://w3.org" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/></svg>
+                    Novo Boletim
+                </a>
+            </div>
+        </div>
+        <p class="small text-body-secondary mb-0">
+                <i class="bi bi-info-circle me-1"></i> O GCM verá apenas os Boletins que foi relator.
+        </p>
+
+        <!-- Formulario de pesquisar -->
+        <div class="card border-0 shadow-sm mb-4 bg-body-tertiary">
+            <div class="card-body">
+                <form method="get" 
+                      action="{% url 'boletim_list' %}" 
+                      class="row g-2 align-items-center"
+                      hx-get="{% url 'boletim_list' %}"
+                      hx-trigger="keyup changed delay:300ms from:input, submit"
+                      hx-target="#resultados-boletim"
+                      hx-select="#resultados-boletim"
+                      hx-swap="outerHTML"
+                      hx-push-url="true"
+                      hx-indicator="#spinner-boletim"
+                    >
+                      
+                    <div class="row g-2 align-items-center">            
+                        <!-- Barra Principal: Título (Ocupa a maior parte do espaço disponível) -->
+                        <div class="col mt-0">
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="pesquisar_nome_envolvido" placeholder="Pesquisar [nome envolvido] ..." value="{{ request.GET.pesquisar_nome_envolvido }}">
+                                <!-- Botão Pesquisar Rápido (Lupa e Azul) -->
+                                <button type="submit" class="btn btn-secondary">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Botão de Filtros Avançados (Visível em TODOS os ecrãs) -->
+                        <div class="col-auto mt-0">
+                            <button class="btn btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#filtrosAvancados" aria-expanded="false" aria-controls="filtrosAvancados" title="Mais filtros">
+                                <i class="bi bi-sliders"></i> <span class="d-none d-sm-inline">+ Filtros</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- PAINEL DE FILTROS: Escondido por padrão em qualquer tamanho de ecrã -->
+                    <div class="collapse mt-2" id="filtrosAvancados">
+                        <div class="card card-body bg-dark border-secondary border-opacity-50 p-3">
+                            <div class="row g-2">
+                                
+                                <!-- placa -->
+                                <div class="col-12 col-md-3">
+                                    <input type="text" class="form-control bg-dark text-white border-secondary" name="pesquisar_placa" placeholder="placa" value="{{ request.GET.pesquisar_placa }}">
+                                </div>
+
+                                <!-- numero boletim -->
+                                <div class="col-12 col-md-3">
+                                    <input type="text" class="form-control bg-dark text-white border-secondary" name="pesquisar_numero_boletim" placeholder="Numero Boletim" value="{{ request.GET.pesquisar_numero_boletim }}">
+                                </div>
+                                
+                                <!-- geral demais campos -->
+                                <div class="col-12 col-md-4">
+                                    <input type="text" class="form-control bg-dark text-white border-secondary" name="pesquisar" placeholder="pesquisa geral..." value="{{ request.GET.pesquisar }}">
+                                </div>
+
+                                <!-- Botão Aplicar Filtros -->
+                                <div class="col-12 col-md-2 d-grid">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="bi bi-search"></i> Pesquisar
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                 <!-- Spinner usando Bootstrap + HTMX -->
+                    <div class="col-auto">
+                        <div id="spinner-boletim" class="spinner-border spinner-border-sm text-primary htmx-indicator" role="status">
+                            <span class="visually-hidden">Carregando...</span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- ÁREA ATUALIZADA PELO HTMX (Lista de cards + Paginação) -->
+        <div id="resultados-boletim">
+            {% if boletins %}
+                <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3">
+                    {% for boletim in boletins %}
+                    <div class="col" id="boletim-card-{{ boletim.id }}">
+                        <!-- Borda esquerda colorida conforme o status (#f59e0b Em Andamento | #10b981 Finalizada) -->
+                        <div class="card h-100 bg-body-tertiary border-0 border-start border-4 shadow-sm" 
+                            style="border-color: {% if boletim.status == 'EM_ANDAMENTO' %}#f59e0b{% else %}#10b981{% endif %} !important;">
+                            
+                            <div class="card-body p-3 p-sm-4 d-flex flex-column">
+                                
+                                <!-- Linha 1: BO/BI + Número em destaque à esquerda | Badge de Status à direita -->
+                                <div class="d-flex justify-content-between align-items-center gap-2 mb-2">
+                                    <div class="fs-5 fw-bolder px-2 py-1 rounded-2 bg-body-secondary border text-nowrap">
+                                        {% if boletim.tipo_boletim == 'BOLETIM_OCORRENCIA' %}
+                                            <span class="text-primary me-2">BO</span>
+                                        {% else %}
+                                            <span class="me-2" style="color: #FF7A00;">BI</span>
+                                        {% endif %}
+                                        <span class="text-body-emphasis">{{ boletim.numero_boletim|default:"S/ Nº CICON" }}</span>
+                                    </div>
+
+                                    {% if boletim.status == 'EM_ANDAMENTO' %}
+                                        <span class="badge rounded-pill text-center py-2 fw-bold text-nowrap" style="min-width: 128px; background-color: #f59e0b; color: #111827;">
+                                            Em Andamento
+                                        </span>
+                                    {% else %}
+                                        <span class="badge rounded-pill text-center py-2 fw-bold text-nowrap" style="min-width: 128px; background-color: #10b981; color: #ffffff;">
+                                            Finalizada
+                                        </span>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Linha 2: REDS -->
+                                <div class="pb-3 mb-3 border-bottom">
+                                    {% if boletim.numero_reds %}
+                                        <span class="small text-body-secondary fw-medium">
+                                            REDS: <span class="text-body-emphasis fw-semibold">{{ boletim.numero_reds }}</span>
+                                        </span>
+                                    {% else %}
+                                        <span class="small text-body-secondary fst-italic">REDS não informado</span>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Tipificação / Natureza -->
+                                <div class="mb-3">
+                                    <div class="small text-uppercase text-body-secondary fw-semibold mb-1" style="font-size: 0.72rem;">
+                                        Tipificação / Natureza
+                                    </div>
+                                    <h6 class="card-title fw-bold text-body-emphasis mb-0">
+                                        {{ boletim.tipificacao_ocorrencia|default:"Tipificação não informada" }}
+                                    </h6>
+                                </div>
+
+                                <!-- Data/Hora Início e Local -->
+                                <div class="small text-body-secondary mt-auto pt-2">
+                                    <div class="mb-1">
+                                        <strong class="text-body-emphasis">Início:</strong> 
+                                        {{ boletim.data_hora_inicio|date:"d/m/Y \à\s H:i"|default:"--" }}
+                                    </div>
+                                    <div class="text-truncate" 
+                                        title="{{ boletim.endereco_dofato }}{% if boletim.numero_dofato %}, {{ boletim.numero_dofato }}{% endif %}{% if boletim.bairro_dofato %} - {{ boletim.bairro_dofato }}{% endif %}">
+                                        <strong class="text-body-emphasis">Local:</strong> 
+                                        {% if boletim.endereco_dofato or boletim.bairro_dofato %}
+                                            {{ boletim.endereco_dofato }}{% if boletim.numero_dofato %}, {{ boletim.numero_dofato }}{% endif %}{% if boletim.bairro_dofato %} - {{ boletim.bairro_dofato }}{% endif %}
+                                        {% else %}
+                                            Não informado
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Rodapé do Card: Botões de Ação -->
+                            <div class="card-footer bg-transparent border-top-0 px-3 px-sm-4 pb-3 pb-sm-4 pt-0">
+                                <div class="d-flex gap-2">
+                                    {% if boletim.status != 'FINALIZADA' %}
+                                        {% if perms.boletim.change_boletim %}
+                                            <a href="{% url 'boletim_detail' boletim.id %}" class="btn bg-body-secondary text-body-emphasis border border-warning fw-semibold flex-grow-1">
+                                                Continuar / Editar
+                                            </a>
+                                        {% endif %}
+                                    {% else %}
+                                        <a href="{% url 'boletim_detail' boletim.id %}" class="btn bg-body-secondary text-body-emphasis border border-success fw-semibold flex-grow-1">
+                                            Visualizar PDF
+                                        </a>
+                                    {% endif %}
+
+                                    <!-- Botão Detail (Visualizar) -->
+                                    {% if perms.boletim.view_boletim %}
+                                        <a href="{% url 'boletim_detail' boletim.id %}" 
+                                        class="btn bg-body-secondary text-info border" 
+                                        title="Visualizar Detalhes">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                    {% endif %}
+
+                                    <!-- Botão Delete (HTMX) - apenas enquanto não finalizada -->
+                                    {% if boletim.status != 'FINALIZADA' and perms.boletim.delete_boletim %}
+                                        <button type="button" 
+                                                class="btn bg-body-secondary text-danger border"
+                                                title="Excluir Rascunho"
+                                                hx-delete="{% url 'boletim_delete' boletim.id %}"
+                                                hx-target="#boletim-card-{{ boletim.id }}"
+                                                hx-swap="outerHTML swap:0.3s"
+                                                hx-confirm="Tem certeza que deseja excluir o boletim {{ boletim.numero_boletim|default:'sem número' }}?">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Paginação -->        
+                {% include 'components/_pagination.html' %}
+                
+            {% else %}
+                <div class="text-center py-5 border rounded bg-body-tertiary">
+                    <i class="bi bi-journal-x fs-1 text-body-secondary"></i>
+                    <h3 class="h5 mt-3">Nenhum boletim encontrado</h3>
+                    <p class="text-body-secondary small mb-3">Você ainda não possui registros ou nenhum boletim corresponde à busca.</p>
+                    <a href="{% url 'boletim_list' %}" class="btn btn-primary">
+                        <i class="bi bi-plus-lg me-1"></i> Iniciar Novo Boletim
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

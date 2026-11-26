@@ -12,5 +12,6 @@ urlpatterns = [
     path('teste/', teste, name='teste'), 
 
     path('', include('gcms.urls')),
+    path('', include('boletim.urls')),
     
 ]

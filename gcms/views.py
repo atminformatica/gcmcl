@@ -2,10 +2,9 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 from . import models, forms
 from django.http import HttpResponse
-
 from django.contrib.auth.models import User 
-
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+
 
 class GcmListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = models.Gcm
@@ -43,8 +42,6 @@ class GcmListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
         context['usuarios'] = User.objects.all()
 
         return context
-
-
 
 class GcmCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = models.Gcm
