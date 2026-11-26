@@ -150,60 +150,63 @@
             {% if boletim.envolvimentos.all %}
                 <div class="row row-cols-1 row-cols-lg-2 g-3">
                     {% for item in boletim.envolvimentos.all %}
-                    <div class="col">
-                        <div class="p-3 rounded bg-body border h-100">
-                            <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
-                                <div>
-                                    <span class="badge bg-primary-subtle text-primary-emphasis border border-primary-subtle text-uppercase mb-1">
-                                        {{ item.get_tipo_envolvimento_display }}
-                                    </span>
-                                    <h3 class="h6 fw-bold text-body-emphasis mb-0">{{ item.envolvido.nome }}</h3>
+                        <div class="col">
+                            <div class="p-3 rounded bg-body border h-100">
+                                <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+                                    <div>
+                                        <span class="badge bg-primary-subtle text-primary-emphasis border border-primary-subtle text-uppercase mb-1">
+                                            {{ item.get_tipo_envolvimento_display }}
+                                        </span>
+                                        <h3 class="h6 fw-bold text-body-emphasis mb-0">{{ item.envolvido.nome }}</h3>
+                                    </div>
+                                </div>
+
+                                <div class="row g-2 small text-body-secondary mb-2">
+                                    <div class="col-6">
+                                        <strong class="text-body-emphasis">CPF:</strong> {{ item.envolvido.cpf|default:"--" }}
+                                    </div>
+                                    <div class="col-6">
+                                        <strong class="text-body-emphasis">RG:</strong> {{ item.envolvido.identidade|default:"--" }} {{ item.envolvido.orgao_expedidor }}
+                                    </div>
+                                    Nascimento: {{ item.envolvido.datanascimento|date:"d/m/Y"|default:"--" }}
+
+
+                                    Telefone: {{ item.envolvido.telefone|default:"--" }}
+
+                                    {% if item.envolvido.mae %}
+
+                                    Mãe: {{ item.envolvido.mae }}
+
+                                    {% endif %}
+                                    {% if item.envolvido.endereco %}
+
+                                    Endereço:
+                                    {{ item.envolvido.endereco }}{% if item.envolvido.numero %}, {{ item.envolvido.numero }}{% endif %}{% if item.envolvido.bairro %} - {{ item.envolvido.bairro }}{% endif %}{% if item.envolvido.cidade %} ({{ item.envolvido.cidade }}/{{ item.envolvido.uf }}){% endif %}
+
+                                    {% endif %}
+                                    {% if item.conduzido_delegacia %}
+                                    Conduzido à Delegacia
+                                    {% endif %}
+                                    {% if item.resistencia_abordagem %}
+                                    Resistência à Abordagem
+                                    {% endif %}
+                                    {% if item.uso_algemas %}
+                                    Uso de Algemas
+                                    {% endif %}
+                                    {% if not item.conduzido_delegacia and not item.resistencia_abordagem and not item.uso_algemas %}
+                                    Sem medidas coercitivas registradas
+                                    {% endif %}
                                 </div>
                             </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+            Nenhum envolvido registrado neste boletim.
+            {% endif %}
+        </div>
+    </div>
 
-                            <div class="row g-2 small text-body-secondary mb-2">
-                                <div class="col-6">
-                                    <strong class="text-body-emphasis">CPF:</strong> {{ item.envolvido.cpf|default:"--" }}
-                                </div>
-                                <div class="col-6">
-                                    <strong class="text-body-emphasis">RG:</strong> {{ item.envolvido.identidade|default:"--" }} {{ item.envolvido.orgao_expedidor }}
-                                </div>
-                                Nascimento: {{ item.envolvido.datanascimento|date:"d/m/Y"|default:"--" }}
-
-
-                                Telefone: {{ item.envolvido.telefone|default:"--" }}
-
-                                {% if item.envolvido.mae %}
-
-                                Mãe: {{ item.envolvido.mae }}
-
-                                {% endif %}
-                                {% if item.envolvido.endereco %}
-
-                                Endereço:
-                                {{ item.envolvido.endereco }}{% if item.envolvido.numero %}, {{ item.envolvido.numero }}{% endif %}{% if item.envolvido.bairro %} - {{ item.envolvido.bairro }}{% endif %}{% if item.envolvido.cidade %} ({{ item.envolvido.cidade }}/{{ item.envolvido.uf }}){% endif %}
-
-                                {% endif %}
-                                {% if item.conduzido_delegacia %}
-                                Conduzido à Delegacia
-                                {% endif %}
-                                {% if item.resistencia_abordagem %}
-                                Resistência à Abordagem
-                                {% endif %}
-                                {% if item.uso_algemas %}
-                                Uso de Algemas
-                                {% endif %}
-                                {% if not item.conduzido_delegacia and not item.resistencia_abordagem and not item.uso_algemas %}
-                                Sem medidas coercitivas registradas
-                                {% endif %}
-
-
-
-                                {% endfor %}
-
-                                {% else %}
-                                Nenhum envolvido registrado neste boletim.
-                                {% endif %}
     <!-- SEÇÃO 3: Veículos no Boletim -->
     <div class="card bg-body-tertiary border-0 shadow-sm mb-3">
         <div class="card-header bg-transparent border-bottom py-2 px-3 px-sm-4">
