@@ -151,7 +151,7 @@ class BoletimForm(forms.ModelForm):
 
         fields = [
             'tipo_boletim',
-            'status',
+            # 'status',
             'numero_boletim',
             'numero_folha',
             'destinatario',
@@ -176,7 +176,7 @@ class BoletimForm(forms.ModelForm):
             'relator_ocupacao_atual',
             'relator_documento',
             'coordenar_turno',
-            'guarnicao',
+            # 'guarnicao',
             'autoridadenome',
             'autoridadedocumento',
             'data_recebimento_autoridade',
@@ -209,7 +209,7 @@ class BoletimForm(forms.ModelForm):
             'relator_ocupacao_atual': forms.TextInput(attrs={'class': 'form-control'}),
             'relator_documento': forms.TextInput(attrs={'class': 'form-control'}),
             'coordenar_turno': forms.Select(attrs={'class': 'form-select'}),
-            'guarnicao': forms.SelectMultiple(attrs={'class': 'form-select'}),
+            'guarnicao': forms.CheckboxSelectMultiple(attrs={'class': 'form-check-input'}),
             'autoridadenome': forms.TextInput(attrs={'class': 'form-control'}),
             'autoridadedocumento': forms.TextInput(attrs={'class': 'form-control'}),
             'data_recebimento_autoridade': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}, format='%Y-%m-%d'),

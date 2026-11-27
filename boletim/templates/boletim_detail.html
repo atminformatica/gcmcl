@@ -16,7 +16,7 @@
         <div class="d-flex flex-wrap gap-2">
             {% if boletim.status != 'FINALIZADA' %}
                 {% if perms.boletim.change_boletim %}
-                    <a href="{% url 'boletim_delete' boletim.id %}" class="btn btn-warning btn-sm fw-semibold">
+                    <a href="{% url 'boletim_update' boletim.id %}" class="btn btn-warning btn-sm fw-semibold">
                         <i class="bi bi-pencil-square me-1"></i> Continuar / Editar
                     </a>
                 {% endif %}
@@ -60,8 +60,8 @@
                     </h1>
                     <div class="small text-body-secondary">
                         <span>{{ boletim.get_tipo_boletim_display }}</span>
-                        <span class="mx-2">•</span>
-                        <span><strong>Folha Nº:</strong> {{ boletim.numero_folha|default:"--" }}</span>
+                        {% comment %} <span class="mx-2">•</span> {% endcomment %}
+                        {% comment %} <span><strong>Folha Nº:</strong> {{ boletim.numero_folha|default:"--" }}</span> {% endcomment %}
                         <span class="mx-2">•</span>
                         <span><strong>REDS:</strong> <span class="text-body-emphasis fw-semibold">{{ boletim.numero_reds|default:"Não informado" }}</span></span>
                     </div>

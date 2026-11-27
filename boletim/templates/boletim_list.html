@@ -14,14 +14,15 @@
             </h1>
             
             <div class="btn-toolbar">
-                <a href="{% url 'boletim_list' %}" class="btn btn-primary d-flex align-items-center gap-1">
+                {% comment %} chama a view boletiminiciar que inicia e redireciona para rota boletim_update {% endcomment %}
+                <a href="{% url 'boletim_create' %}" class="btn btn-primary d-flex align-items-center gap-1">
                     <svg xmlns="http://w3.org" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/></svg>
                     Novo Boletim
                 </a>
             </div>
         </div>
         <p class="small text-body-secondary mb-0">
-                <i class="bi bi-info-circle me-1"></i> O GCM verá apenas os Boletins que foi relator.
+                <i class="bi bi-info-circle me-1"></i> Você pode ver apenas os Boletins que foi relator.
         </p>
 
         <!-- Formulario de pesquisar -->
@@ -177,7 +178,7 @@
                                 <div class="d-flex gap-2">
                                     {% if boletim.status != 'FINALIZADA' %}
                                         {% if perms.boletim.change_boletim %}
-                                            <a href="{% url 'boletim_detail' boletim.id %}" class="btn bg-body-secondary text-body-emphasis border border-warning fw-semibold flex-grow-1">
+                                            <a href="{% url 'boletim_update' boletim.id %}" class="btn bg-body-secondary text-body-emphasis border border-warning fw-semibold flex-grow-1">
                                                 Continuar / Editar
                                             </a>
                                         {% endif %}

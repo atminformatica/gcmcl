@@ -9,7 +9,8 @@
         <input 
             id="{{ field.id_for_label }}"
             name="{{ field.html_name }}"
-            value="{{ field.value|default_if_none:'' }}"
+            {% comment %} value="{{ field.value|default_if_none:'' }}" {% endcomment %}
+            value="{% if type == 'datetime-local' and field.value %}{{ field.value|date:'Y-m-d\TH:i' }}{% elif type == 'date' and field.value %}{{ field.value|date:'Y-m-d' }}{% else %}{{ field.value|default_if_none:'' }}{% endif %}"
             placeholder="{{ label|default:field.label }}"
             class="text-uppercase form-control {% if field.errors %}is-invalid{% endif %}"
             {% if field.field.required %}required{% endif %}

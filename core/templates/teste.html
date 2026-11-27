@@ -1,131 +1,512 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+
+{% block title %}
+    GCM Digital - Preenchimento de Boletim
+{% endblock %}
 
 {% block content %}
-<div class="card">
-    <div class="card-body">
-        <div class="mb-3 mt-2">
-            <h1 class="fs-4 text-info-emphasis">
-                Novo Cadastro de Boletim de Ocorrência
-            </h1>
-        </div>        
-        <p class="text-body-secondary small">
-            Preencha as informações disponíveis. Você pode continuar posteriormente.
-        </p>
+<div class="container-fluid px-2 px-md-3 pb-5 mb-5">
 
-        <div data-bs-spy="scroll" data-bs-target="#navSecoes" data-bs-root-margin="0px 0px -40%" data-bs-smooth-scroll="true" tabindex="0">
-            <form id="formBoletim" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
+    <!-- Cabeçalho da Página -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3 mt-2">
+        <div>
+            <div class="d-flex align-items-center gap-2">
+                <h1 class="fs-4 fw-bold mb-0" style="color: #1ea0ba;">
+                    REGISTRO DE BOLETIM
+                </h1>
+                <span class="badge rounded-pill py-1 px-3 fw-bold" style="background-color: #f59e0b; color: #111827;">
+                    Em Andamento
+                </span>
+            </div>
+            <small class="text-body-secondary">Rascunho Interno #42 • Preencha os blocos conforme o andamento da ocorrência</small>
+        </div>
 
-                <!-- SEÇÃO 1 -->
-                <section id="ocorrencia" class="bg-body-tertiary rounded-3 p-4 mb-4">
-                    <h5 class="text-primary">
-                        <i class="bi bi-clipboard"></i> Dados da ocorrência
-                    </h5>
-                    <hr>
-                    <label class="form-label">Data da ocorrência</label>
-                    <input type="date" class="form-control mb-3">
-                </section>
+        <a href="#" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i> Voltar
+        </a>
+    </div>
 
-                <!-- SEÇÃO 2 -->
-                <section id="envolvidos" class="bg-body-tertiary rounded-3 p-4 mb-4">
-                    <h5 class="text-success">
-                        <i class="bi bi-people"></i> Envolvidos
-                    </h5>
-                    <hr>
-                    <label class="form-label">Nome</label>
-                    <input type="text" class="form-control mb-3">
-                </section>
+    <!-- Início do Formulário Principal -->
+    <form method="post" id="form-boletim">
+        {% csrf_token %}
 
-                <!-- SEÇÃO 3 -->
-                <section id="relato" class="bg-body-tertiary rounded-3 p-4 mb-4">
-                    <h5 class="text-info-emphasis">
-                        <i class="bi bi-chat-left-text"></i> Histórico
-                    </h5>
-                    <hr>
-                    <label class="form-label">Descrição da ocorrência</label>
-                    <textarea class="form-control" rows="8"></textarea>
-                </section>
-
-                <!-- SEÇÃO 4 -->
-                <section id="objetos" class="bg-body-tertiary rounded-3 p-4 mb-4">
-                    <h5 class="text-warning-emphasis">
-                        <i class="bi bi-box"></i> Veiculos
-                    </h5>
-                    <hr>
-                    <label class="form-label">Descrição do objeto</label>
-                    <input type="text" class="form-control mb-3">
-                </section>
-
-                <!-- SEÇÃO 5 -->
-                <section id="anexos" class="bg-body-tertiary rounded-3 p-4 mb-4">
-                    <h5 class="text-danger">
-                        <i class="bi bi-paperclip"></i> Relator
-                    </h5>
-                    <hr>
-                    <label class="form-label">Adicionar documentos</label>
-                    <input type="file" class="form-control mb-3" multiple>
-                </section>
-
-                <!-- BLOCO DAS 3 BARRAS INFERIORES -->
-                <div class="sticky-bottom bg-body border-top pt-1 pb-1 shadow-sm z-2">
-                    <!-- Barra 1: Botões com larguras iguais e apenas texto -->
-                    <div class="d-flex w-100 gap-2 pb-2 mb-1">
-                        <button type="submit" name="acao1" value="salvar" class="btn btn-success btn-sm flex-fill">
-                            Salvar
-                        </button>
-                        <button type="submit" name="acao2" value="finalizar" class="btn btn-info btn-sm flex-fill">
-                            Finalizar
-                        </button>
-                        <a href="{% url 'gcm_list' %}" class="btn btn-danger btn-sm flex-fill">
-                            Cancelar
-                        </a>                      
-                        
+        <!-- BLOCO 1: Controle e Numeração (CICON / REDS) -->
+        <div class="card bg-body-tertiary border-0 border-start border-4 shadow-sm mb-3" style="border-color: #1ea0ba !important;">
+            <div class="card-header bg-transparent border-bottom py-2 px-3 px-sm-4">
+                <h2 class="h6 fw-bold text-uppercase mb-0" style="color: #1ea0ba;">
+                    1. Identificação e Controle
+                </h2>
+            </div>
+            <div class="card-body p-3 p-sm-4">
+                <div class="row g-2 g-md-3">
+                    <!-- Tipo de Boletim -->
+                    <div class="col-12 col-sm-5 col-md-4">
+                        <div class="form-floating">
+                            <select class="form-select" id="id_tipo_boletim">
+                                <option value="BOLETIM_OCORRENCIA" selected>Boletim de Ocorrência</option>
+                                <option value="BOLETIM_INTERVENCAO">Boletim de Intervenção</option>
+                            </select>
+                            <label for="id_tipo_boletim">Tipo de Boletim</label>
+                        </div>
                     </div>
-                    <!-- Barra 1: Apenas ícones pequenos ocupando toda a linha com larguras iguais -->
-                    <nav id="navSecoes" class="nav nav-pills nav-fill w-100 gap-1 pb-2 ">
-                        <a class="nav-link py-1 px-0" href="#ocorrencia" title="Identificação da ocorrência">
-                            <i class="bi bi-clipboard fs-6"></i>
-                        </a>
-                        <a class="nav-link py-1 px-0" href="#envolvidos" title="Pessoas envolvidas">
-                            <i class="bi bi-people fs-6"></i>
-                        </a>
-                        <a class="nav-link py-1 px-0" href="#relato" title="Relato dos fatos">
-                            <i class="bi bi-chat-left-text fs-6"></i>
-                        </a>
-                        <a class="nav-link py-1 px-0" href="#objetos" title="Objetos e bens">
-                            <i class="bi bi-box fs-6"></i>
-                        </a>
-                        <a class="nav-link py-1 px-0" href="#anexos" title="Anexos">
-                            <i class="bi bi-paperclip fs-6"></i>
-                        </a>
-                    </nav>                    
 
-                    <!-- Barra 3: Navegação estilo App (ícones com textos bem pequenos) -->
-                    {% comment %} <div class="d-flex justify-content-around text-center pt-1">
-                        <a href="#" class="nav-link text-primary py-0 px-2">
-                            <i class="bi bi-house-door-fill fs-5 d-block lh-1"></i>
-                            <small class="small fw-medium">Home</small>
-                        </a>
-                        <a href="{% url 'gcm_list' %}" class="nav-link text-body-secondary py-0 px-2">
-                            <i class="bi bi-people fs-5 d-block lh-1"></i>
-                            <small class="small fw-medium">GCMs</small>
-                        </a>
-                        {% if user.is_authenticated %}
-                        <a href="{% url 'account_logout' %}" class="nav-link text-danger py-0 px-2">
-                            <i class="bi bi-box-arrow-right fs-5 d-block lh-1"></i>
-                            <small class="small fw-medium">Sair</small>
-                        </a>
-                        {% else %}
-                        <a href="{% url 'account_login' %}" class="nav-link text-body-secondary py-0 px-2">
-                            <i class="bi bi-box-arrow-in-right fs-5 d-block lh-1"></i>
-                            <small class="small fw-medium">Entrar</small>
-                        </a>
-                        {% endif %}
-                    </div> {% endcomment %}
+                    <!-- Número do Boletim (CICON) -->
+                    <div class="col-7 col-sm-4 col-md-4">
+                        <div class="form-floating">
+                            <input type="text" class="form-control fw-bold" id="id_numero_boletim" value="2026/00149" placeholder="Nº BI/BO">
+                            <label for="id_numero_boletim">Boletim Nº (CICON)</label>
+                        </div>
+                    </div>
+
+                    <!-- Folha Nº -->
+                    <div class="col-5 col-sm-3 col-md-4">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="id_numero_folha" value="01/02" placeholder="Folha">
+                            <label for="id_numero_folha">Folha Nº</label>
+                        </div>
+                    </div>
+
+                    <!-- Número REDS -->
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="id_numero_reds" value="2026-00491200-001" placeholder="REDS">
+                            <label for="id_numero_reds">Número REDS</label>
+                        </div>
+                    </div>
+
+                    <!-- Data Emissão -->
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <div class="form-floating">
+                            <input type="date" class="form-control" id="id_data_emissao" value="2026-11-26">
+                            <label for="id_data_emissao">Data de Emissão</label>
+                        </div>
+                    </div>
+
+                    <!-- Destinatário -->
+                    <div class="col-12 col-md-4">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="id_destinatario" value="2ª DELEGACIA REGIONAL DE POLÍCIA CIVIL" placeholder="Destinatário">
+                            <label for="id_destinatario">Destinatário</label>
+                        </div>
+                    </div>
+
+                    <!-- Tipificação da Ocorrência -->
+                    <div class="col-12">
+                        <div class="form-floating">
+                            <input type="text" class="form-control fw-semibold" id="id_tipificacao" value="ATrito Verbal / Perturbação do Sossego" placeholder="Tipificação">
+                            <label for="id_tipificacao">Tipificação da Ocorrência</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BLOCO 2: Cronologia, Acionamento e Local do Fato -->
+        <div class="card bg-body-tertiary border-0 border-start border-4 shadow-sm mb-3" style="border-color: #1ea0ba !important;">
+            <div class="card-header bg-transparent border-bottom py-2 px-3 px-sm-4">
+                <h2 class="h6 fw-bold text-uppercase mb-0" style="color: #1ea0ba;">
+                    2. Acionamento e Local do Fato
+                </h2>
+            </div>
+            <div class="card-body p-3 p-sm-4">
+                <div class="row g-2 g-md-3">
+                    <!-- Forma de Acionamento -->
+                    <div class="col-12 col-md-4">
+                        <div class="form-floating">
+                            <select class="form-select" id="id_acionamento">
+                                <option value="CENTRAL_COMUNICACOES" selected>Central de comunicações (CICON)</option>
+                                <option value="DIRETAMENTE_GUARDA">Diretamente ao Guarda</option>
+                                <option value="DENUNCIA_ANONIMA">Denúncia anônima</option>
+                                <option value="DEPARANDO_FATO">Deparando com o fato</option>
+                                <option value="INICIATIVA">Iniciativa</option>
+                            </select>
+                            <label for="id_acionamento">Forma de Acionamento</label>
+                        </div>
+                    </div>
+
+                    <!-- Descrição da Natureza -->
+                    <div class="col-12 col-md-4">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="id_descricao_natureza" value="PERTURBAÇÃO DO SOSSEGO" placeholder="Natureza">
+                            <label for="id_descricao_natureza">Descrição da Natureza</label>
+                        </div>
+                    </div>
+
+                    <!-- Órgão e Setor -->
+                    <div class="col-6 col-md-2">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="id_orgao" value="GCMCL" placeholder="Órgão">
+                            <label for="id_orgao">Órgão</label>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-2">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="id_setor" value="PATRULHA 01" placeholder="Setor">
+                            <label for="id_setor">Setor</label>
+                        </div>
+                    </div>
+
+                    <!-- Horários (3 colunas no PC, empilhadas no celular) -->
+                    <div class="col-12 col-sm-4">
+                        <div class="form-floating">
+                            <input type="datetime-local" class="form-control" id="id_data_hora_acionamento" value="2026-11-26T18:10">
+                            <label for="id_data_hora_acionamento">Data/Hora Acionamento</label>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-4">
+                        <div class="form-floating">
+                            <input type="datetime-local" class="form-control" id="id_data_hora_inicio" value="2026-11-26T18:18">
+                            <label for="id_data_hora_inicio">Data/Hora Início</label>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-4">
+                        <div class="form-floating">
+                            <input type="datetime-local" class="form-control" id="id_data_hora_final" value="">
+                            <label for="id_data_hora_final">Data/Hora Final</label>
+                        </div>
+                    </div>
+
+                    <div class="col-12"><hr class="my-1"></div>
+
+                    <!-- Endereço do Fato -->
+                    <div class="col-12 col-md-6">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="id_endereco_dofato" value="AV. TELÉSFORO CÂNDIDO DE RESENDE" placeholder="Endereço">
+                            <label for="id_endereco_dofato">Endereço do Fato</label>
+                        </div>
+                    </div>
+                    <div class="col-4 col-md-2">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="id_numero_dofato" value="450" placeholder="Número">
+                            <label for="id_numero_dofato">Número</label>
+                        </div>
+                    </div>
+                    <div class="col-8 col-md-4">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="id_complemento" value="PRÓXIMO À PRAÇA" placeholder="Complemento">
+                            <label for="id_complemento">Complemento</label>
+                        </div>
+                    </div>
+
+                    <!-- Bairro, Cidade e UF -->
+                    <div class="col-12 col-sm-5 col-md-5">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="id_bairro_dofato" value="CENTRO" placeholder="Bairro">
+                            <label for="id_bairro_dofato">Bairro</label>
+                        </div>
+                    </div>
+                    <div class="col-9 col-sm-5 col-md-5">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="id_cidade_dofato" value="CONSELHEIRO LAFAIETE" placeholder="Cidade">
+                            <label for="id_cidade_dofato">Cidade</label>
+                        </div>
+                    </div>
+                    <div class="col-3 col-sm-2 col-md-2">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="id_uf_dofato" value="MG" maxlength="2" placeholder="UF">
+                            <label for="id_uf_dofato">UF</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BLOCO 3: Envolvidos e Veículos (Áreas Dinâmicas) -->
+        <div class="row g-3 mb-3">
+            
+            <!-- Coluna Envolvidos -->
+            <div class="col-12 col-xl-6">
+                <div class="card h-100 bg-body-tertiary border-0 border-start border-4 shadow-sm" style="border-color: #1ea0ba !important;">
+                    <div class="card-header bg-transparent border-bottom py-2 px-3 d-flex justify-content-between align-items-center">
+                        <h2 class="h6 fw-bold text-uppercase mb-0" style="color: #1ea0ba;">
+                            3. Envolvidos
+                        </h2>
+                        <button type="button" class="btn btn-primary btn-sm fw-semibold" data-bs-toggle="modal" data-bs-target="#modalEnvolvido">
+                            <i class="bi bi-person-plus-fill me-1"></i> Adicionar Envolvido
+                        </button>
+                    </div>
+                    <div class="card-body p-3 d-flex flex-column gap-2" id="lista-envolvidos">
+                        
+                        <!-- Item Fictício 1 -->
+                        <div class="p-2 px-3 rounded bg-body border d-flex justify-content-between align-items-center gap-2">
+                            <div class="overflow-hidden">
+                                <div class="d-flex align-items-center gap-2 mb-1">
+                                    <span class="badge bg-primary-subtle text-primary-emphasis border border-primary-subtle">SOLICITANTE</span>
+                                </div>
+                                <div class="fw-bold  text-truncate">CARLOS ALBERTO DA SILVA</div>
+                            </div>
+                            <button type="button" class="btn btn-outline-danger btn-sm" title="Remover do Boletim">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+
+                        <!-- Item Fictício 2 -->
+                        <div class="p-2 px-3 rounded bg-body border d-flex justify-content-between align-items-center gap-2">
+                            <div class="overflow-hidden">
+                                <div class="d-flex flex-wrap align-items-center gap-1 mb-1">
+                                    <span class="badge bg-danger-subtle text-danger-emphasis border border-danger-subtle">AUTOR</span>
+                                    <span class="badge text-bg-danger" style="font-size: 0.68rem;">Conduzido DP</span>
+                                    <span class="badge text-bg-secondary" style="font-size: 0.68rem;">Algemas</span>
+                                </div>
+                                <div class="fw-bold text-body-emphasis text-truncate">MARCOS VINÍCIUS OLIVEIRA</div>
+                            </div>
+                            <button type="button" class="btn btn-outline-danger btn-sm" title="Remover do Boletim">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Coluna Veículos -->
+            <div class="col-12 col-xl-6">
+                <div class="card h-100 bg-body-tertiary border-0 border-start border-4 shadow-sm" style="border-color: #1ea0ba !important;">
+                    <div class="card-header bg-transparent border-bottom py-2 px-3 d-flex justify-content-between align-items-center">
+                        <h2 class="h6 fw-bold text-uppercase mb-0" style="color: #1ea0ba;">
+                            4. Veículos
+                        </h2>
+                        <button type="button" class="btn btn-primary btn-sm fw-semibold" data-bs-toggle="modal" data-bs-target="#modalVeiculo">
+                            <i class="bi bi-car-front-fill me-1"></i> Adicionar Veículo
+                        </button>
+                    </div>
+                    <div class="card-body p-3 d-flex flex-column gap-2" id="lista-veiculos">
+                        
+                        <!-- Item Fictício 1 -->
+                        <div class="p-2 px-3 rounded bg-body border d-flex justify-content-between align-items-center gap-2">
+                            <div class="overflow-hidden">
+                                <div class="d-flex align-items-center gap-2 mb-1">
+                                    <span class="badge bg-body-secondary text-body-emphasis border font-monospace">ABC1D23 / MG</span>
+                                    <span class="badge bg-info-subtle text-info-emphasis border border-info-subtle">APREENDIDO</span>
+                                </div>
+                                <div class="fw-bold text-body-emphasis text-truncate">VW / GOL 1.0 - PRATA</div>
+                            </div>
+                            <button type="button" class="btn btn-outline-danger btn-sm" title="Remover do Boletim">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- BLOCO 4: Histórico / Relato da Ocorrência -->
+        <div class="card bg-body-tertiary border-0 border-start border-4 shadow-sm mb-3" style="border-color: #1ea0ba !important;">
+            <div class="card-header bg-transparent border-bottom py-2 px-3 px-sm-4">
+                <h2 class="h6 fw-bold text-uppercase mb-0" style="color: #1ea0ba;">
+                    5. Histórico / Relato da Ocorrência
+                </h2>
+            </div>
+            <div class="card-body p-3 p-sm-4">
+                <div class="form-floating">
+                    <textarea class="form-control" id="id_historico" style="height: 180px;" placeholder="Relato">AOS VINTE E SEIS DIAS DO MÊS DE NOVEMBRO DE 2026, POR VOLTA DAS 18H10, ESTA GUARNIÇÃO FOI ACIONADA VIA CICON PARA AVERIGUAR DENÚNCIA DE PERTURBAÇÃO DO SOSSEGO NA AV. TELÉSFORO CÂNDIDO DE RESENDE...</textarea>
+                    <label for="id_historico">Descreva detalhadamente os fatos, providências e materiais apreendidos</label>
+                </div>
+            </div>
+        </div>
+
+                <!-- BLOCO 6: Guarnição / Apoio (Compacto em 1 linha por card) -->
+        <div class="card bg-body-tertiary border-0 border-start border-4 shadow-sm mb-3" style="border-color: #1ea0ba !important;">
+            <div class="card-header bg-transparent border-bottom py-2 px-3 px-sm-4 w-100 d-flex justify-content-between align-items-center">
+                <h2 class="h6 fw-bold text-uppercase mb-0" style="color: #1ea0ba;">
+                    6. Guarnição
+                </h2>
+                <button type="button" class="btn btn-primary btn-sm fw-semibold text-nowrap ms-auto" data-bs-toggle="modal" data-bs-target="#modalGuarnicao">
+                    <i class="bi bi-shield-plus me-1"></i> Adicionar GCM
+                </button>
+            </div>
+            <div class="card-body p-3">
+                <div class="d-flex flex-wrap gap-2" id="lista-guarnicao">
+                    
+                    <!-- GCM Fictício 1 -->
+                    <div class="d-inline-flex align-items-center gap-2 px-2 py-1 rounded-2 bg-body border shadow-sm">
+                        <span class="fw-bold text-body-emphasis small">GCM SILVA</span>
+                        <button type="button" class="btn btn-outline-danger btn-sm py-0 px-1 border-0" title="Remover da Guarnição">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+
+                    <!-- GCM Fictício 2 -->
+                    <div class="d-inline-flex align-items-center gap-2 px-2 py-1 rounded-2 bg-body border shadow-sm">
+                        <span class="fw-bold text-body-emphasis small">GCM COSTA</span>
+                        <button type="button" class="btn btn-outline-danger btn-sm py-0 px-1 border-0" title="Remover da Guarnição">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+
+                    <!-- GCM Fictício 3 -->
+                    <div class="d-inline-flex align-items-center gap-2 px-2 py-1 rounded-2 bg-body border shadow-sm">
+                        <span class="fw-bold text-body-emphasis small">INSPETOR FERREIRA</span>
+                        <button type="button" class="btn btn-outline-danger btn-sm py-0 px-1 border-0" title="Remover da Guarnição">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
 
                 </div>
-            </form>
+            </div>
+        </div>
+
+        <!-- BLOCO 7: Efetivo (Relator, Coordenação) e Autoridade -->
+        <div class="card bg-body-tertiary border-0 border-start border-4 shadow-sm mb-3" style="border-color: #1ea0ba !important;">
+            <div class="card-header bg-transparent border-bottom py-2 px-3 px-sm-4">
+                <h2 class="h6 fw-bold text-uppercase mb-0" style="color: #1ea0ba;">
+                    7. RELATOR, COORDENAÇÃO E RECEBIMENTO
+                </h2>
+            </div>
+            <div class="card-body p-3 p-sm-4">
+                <div class="row g-2 g-md-3">
+                    <!-- GCM Relator -->
+                    <div class="col-12 col-md-3">
+                        <div class="form-floating">
+                            <select class="form-select" id="id_relatorgcm">
+                                <option value="1" selected>GCM ALEXANDRE (MAT. 12345)</option>
+                                <option value="2">GCM SILVA (MAT. 67890)</option>
+                            </select>
+                            <label for="id_relatorgcm">GCM Relator</label>
+                        </div>
+                    </div>
+
+                    <!-- Cargo do Relator (Preenchido via HTMX) -->
+                    <div class="col-6 col-md-3">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="id_relator_ocupacao" value="GUARDA CIVIL MUNICIPAL" placeholder="Cargo">
+                            <label for="id_relator_ocupacao">Cargo do Relator</label>
+                        </div>
+                    </div>
+
+                    <!-- Documento do Relator (Preenchido via HTMX) -->
+                    <div class="col-6 col-md-3">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="id_relator_documento" value="12345" placeholder="Documento">
+                            <label for="id_relator_documento">Matrícula / Doc. Relator</label>
+                        </div>
+                    </div>
+
+                    <!-- Coordenador do Turno -->
+                    <div class="col-12 col-md-3">
+                        <div class="form-floating">
+                            <select class="form-select" id="id_coordenar_turno">
+                                <option value="">---------</option>
+                                <option value="3" selected>INSPETOR FERREIRA (MAT. 10203)</option>
+                            </select>
+                            <label for="id_coordenar_turno">Coordenador do Turno</label>
+                        </div>
+                    </div>
+                    
+                    <div class="col-12"><hr class="my-1"></div>
+
+                    <!-- Autoridade Recebedora -->
+                    <div class="col-12 col-md-5">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="id_autoridadenome" value="DR. JOÃO PAULO - DELEGADO DE PLANTÃO" placeholder="Autoridade">
+                            <label for="id_autoridadenome">Autoridade Recebedora</label>
+                        </div>
+                    </div>
+                    <div class="col-7 col-md-4">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="id_autoridadedocumento" value="MASP 112233-4" placeholder="Documento">
+                            <label for="id_autoridadedocumento">Documento da Autoridade</label>
+                        </div>
+                    </div>
+                    <div class="col-5 col-md-3">
+                        <div class="form-floating">
+                            <input type="date" class="form-control" id="id_data_recebimento" value="2026-11-26">
+                            <label for="id_data_recebimento">Data Recebimento</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BARRA DE AÇÕES FIXA NO RODAPÉ (Excelente para celular e PC) -->
+        <div class="fixed-bottom bg-body-tertiary border-top shadow-lg py-2 px-3" style="z-index: 1030;">
+            <div class="container-fluid d-flex justify-content-between align-items-center gap-2">
+                <!-- Botão Cancelar / Sair -->
+                <button type="button" class="btn btn-outline-danger btn-sm fw-semibold"
+                        onclick="return confirm('Deseja cancelar/sair desta edição?');">
+                    <i class="bi bi-x-lg me-1"></i> Cancelar
+                </button>
+
+                <div class="d-flex gap-2">
+                    <!-- Salvar Rascunho (mantém EM_ANDAMENTO) -->
+                    <button type="submit" name="acao" value="rascunho" class="btn btn-warning btn-sm fw-semibold text-dark">
+                        <i class="bi bi-save me-1"></i> Salvar Rascunho
+                    </button>
+
+                    <!-- Finalizar Boletim (muda para FINALIZADA) -->
+                    <button type="submit" name="acao" value="finalizar" class="btn btn-success btn-sm fw-semibold"
+                            onclick="return confirm('Após finalizar, o boletim não poderá mais ser editado. Confirma?');">
+                        <i class="bi bi-check2-circle me-1"></i> Finalizar Boletim
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </form>
+</div>
+
+<!-- MODAL TELA CHEIA: ENVOLVIDO (Em branco para teste visual) -->
+<div class="modal fade" id="modalEnvolvido" tabindex="-1" aria-labelledby="modalEnvolvidoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content bg-body">
+            <div class="modal-header bg-body-tertiary border-bottom">
+                <h5 class="modal-title fw-bold" id="modalEnvolvidoLabel" style="color: #1ea0ba;">
+                    <i class="bi bi-person-plus-fill me-2"></i> Adicionar Envolvido ao Boletim
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body" id="conteudo-modal-envolvido">
+                <p class="text-body-secondary">Área de pesquisa e formulário de Envolvido será carregada aqui via HTMX...</p>
+            </div>
+            <div class="modal-footer bg-body-tertiary">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
         </div>
     </div>
 </div>
+
+<!-- MODAL TELA CHEIA: VEÍCULO (Em branco para teste visual) -->
+<div class="modal fade" id="modalVeiculo" tabindex="-1" aria-labelledby="modalVeiculoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content bg-body">
+            <div class="modal-header bg-body-tertiary border-bottom">
+                <h5 class="modal-title fw-bold" id="modalVeiculoLabel" style="color: #1ea0ba;">
+                    <i class="bi bi-car-front-fill me-2"></i> Adicionar Veículo ao Boletim
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body" id="conteudo-modal-veiculo">
+                <p class="text-body-secondary">Área de pesquisa e formulário de Veículo será carregada aqui via HTMX...</p>
+            </div>
+            <div class="modal-footer bg-body-tertiary">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL TELA CHEIA: GUARNIÇÃO / APOIO (Mesmo padrão de Envolvidos e Veículos) -->
+<div class="modal fade" id="modalGuarnicao" tabindex="-1" aria-labelledby="modalGuarnicaoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content bg-body">
+            <div class="modal-header bg-body-tertiary border-bottom">
+                <h5 class="modal-title fw-bold" id="modalGuarnicaoLabel" style="color: #1ea0ba;">
+                    <i class="bi bi-shield-plus me-2"></i> Adicionar GCM à Guarnição
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body" id="conteudo-modal-guarnicao">
+                <p class="text-body-secondary">Área de pesquisa por Nome de Guerra ou Matrícula será carregada aqui via HTMX...</p>
+            </div>
+            <div class="modal-footer bg-body-tertiary">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 {% endblock %}

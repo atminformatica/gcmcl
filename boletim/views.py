@@ -109,12 +109,25 @@ class BoletimIniciarView(LoginRequiredMixin, View):
             relator_ocupacao_atual=gcm_logado.ocupacao_atual if gcm_logado else '',
             relator_documento=gcm_logado.matricula if gcm_logado else '',
         )
-        return redirect('boletim:boletim_update', pk=boletim.pk)
+        return redirect('boletim_update', pk=boletim.pk)
 
 class BoletimUpdateView(LoginRequiredMixin, UpdateView):
     model = models.Boletim
     form_class = forms.BoletimForm
     template_name = 'boletim_update.html'
+    permission_required = 'boletim.change_boletim'
+    success_url = reverse_lazy('boletim_list')
+
+    def get_queryset(self):
+        gcm_logado = getattr(self.request.user, 'gcm_profile', None)
+        if not gcm_logado:
+            return models.Boletim.objects.none()
+
+        # Só permite editar se estiver EM_ANDAMENTO e pertencer ao GCM logado
+        return super().get_queryset().filter(
+            relatorgcm=gcm_logado,
+            status='EM_ANDAMENTO'
+        )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -123,13 +136,29 @@ class BoletimUpdateView(LoginRequiredMixin, UpdateView):
         return context
 
     def form_valid(self, form):
+        acao = self.request.POST.get('acao')
+
+        if acao == 'finalizar':
+            # Valida se o número do BI (CICON) foi preenchido antes de finalizar
+            if not form.cleaned_data.get('numero_boletim'):
+                form.add_error('numero_boletim', 'Informe o Nº do Boletim (CICON) antes de finalizar.')
+                return self.form_invalid(form)
+
+            form.instance.status = 'FINALIZADA'
+            messages.success(self.request, 'Boletim finalizado com sucesso!')
+            super().form_valid(form)
+            return redirect('boletim_detail', pk=self.object.pk)
+
+        # Se clicou em "Salvar Rascunho"
+        form.instance.status = 'EM_ANDAMENTO'
         messages.success(self.request, 'Boletim salvo com sucesso!')
+
         return super().form_valid(form)
     
     # usamos esse meto poque precisamos passar a pk para a rota update por 
     # issao nao usamos o success_url = reverse_lazy('boletim_list')
-    def get_success_url(self):
-        return reverse_lazy('boletim:boletim_update', kwargs={'pk': self.object.pk})
+    # def get_success_url(self):
+    #     return reverse_lazy('boletim_update', kwargs={'pk': self.object.pk})
 
 class BoletimCancelarView(LoginRequiredMixin, View):
     # """Apaga o boletim APENAS se nunca foi salvo e não tem envolvidos/veículos.

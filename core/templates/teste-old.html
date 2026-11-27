@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <div class="mb-3 mt-2">
+            <h1 class="fs-4 text-info-emphasis">
+                Novo Cadastro de Boletim de Ocorrência
+            </h1>
+        </div>        
+        <p class="text-body-secondary small">
+            Preencha as informações disponíveis. Você pode continuar posteriormente.
+        </p>
+
+        <div data-bs-spy="scroll" data-bs-target="#navSecoes" data-bs-root-margin="0px 0px -40%" data-bs-smooth-scroll="true" tabindex="0">
+            <form id="formBoletim" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <!-- SEÇÃO 1 -->
+                <section id="ocorrencia" class="bg-body-tertiary rounded-3 p-4 mb-4">
+                    <h5 class="text-primary">
+                        <i class="bi bi-clipboard"></i> Dados da ocorrência
+                    </h5>
+                    <hr>
+                    <label class="form-label">Data da ocorrência</label>
+                    <input type="date" class="form-control mb-3">
+                </section>
+
+                <!-- SEÇÃO 2 -->
+                <section id="envolvidos" class="bg-body-tertiary rounded-3 p-4 mb-4">
+                    <h5 class="text-success">
+                        <i class="bi bi-people"></i> Envolvidos
+                    </h5>
+                    <hr>
+                    <label class="form-label">Nome</label>
+                    <input type="text" class="form-control mb-3">
+                </section>
+
+                <!-- SEÇÃO 3 -->
+                <section id="relato" class="bg-body-tertiary rounded-3 p-4 mb-4">
+                    <h5 class="text-info-emphasis">
+                        <i class="bi bi-chat-left-text"></i> Histórico
+                    </h5>
+                    <hr>
+                    <label class="form-label">Descrição da ocorrência</label>
+                    <textarea class="form-control" rows="8"></textarea>
+                </section>
+
+                <!-- SEÇÃO 4 -->
+                <section id="objetos" class="bg-body-tertiary rounded-3 p-4 mb-4">
+                    <h5 class="text-warning-emphasis">
+                        <i class="bi bi-box"></i> Veiculos
+                    </h5>
+                    <hr>
+                    <label class="form-label">Descrição do objeto</label>
+                    <input type="text" class="form-control mb-3">
+                </section>
+
+                <!-- SEÇÃO 5 -->
+                <section id="anexos" class="bg-body-tertiary rounded-3 p-4 mb-4">
+                    <h5 class="text-danger">
+                        <i class="bi bi-paperclip"></i> Relator
+                    </h5>
+                    <hr>
+                    <label class="form-label">Adicionar documentos</label>
+                    <input type="file" class="form-control mb-3" multiple>
+                </section>
+
+                <!-- BLOCO DAS 3 BARRAS INFERIORES -->
+                <div class="sticky-bottom bg-body border-top pt-1 pb-1 shadow-sm z-2">
+                    <!-- Barra 1: Botões com larguras iguais e apenas texto -->
+                    <div class="d-flex w-100 gap-2 pb-2 mb-1">
+                        <button type="submit" name="acao1" value="salvar" class="btn btn-success btn-sm flex-fill">
+                            Salvar
+                        </button>
+                        <button type="submit" name="acao2" value="finalizar" class="btn btn-info btn-sm flex-fill">
+                            Finalizar
+                        </button>
+                        <a href="{% url 'gcm_list' %}" class="btn btn-danger btn-sm flex-fill">
+                            Cancelar
+                        </a>                      
+                        
+                    </div>
+                    <!-- Barra 1: Apenas ícones pequenos ocupando toda a linha com larguras iguais -->
+                    <nav id="navSecoes" class="nav nav-pills nav-fill w-100 gap-1 pb-2 ">
+                        <a class="nav-link py-1 px-0" href="#ocorrencia" title="Identificação da ocorrência">
+                            <i class="bi bi-clipboard fs-6"></i>
+                        </a>
+                        <a class="nav-link py-1 px-0" href="#envolvidos" title="Pessoas envolvidas">
+                            <i class="bi bi-people fs-6"></i>
+                        </a>
+                        <a class="nav-link py-1 px-0" href="#relato" title="Relato dos fatos">
+                            <i class="bi bi-chat-left-text fs-6"></i>
+                        </a>
+                        <a class="nav-link py-1 px-0" href="#objetos" title="Objetos e bens">
+                            <i class="bi bi-box fs-6"></i>
+                        </a>
+                        <a class="nav-link py-1 px-0" href="#anexos" title="Anexos">
+                            <i class="bi bi-paperclip fs-6"></i>
+                        </a>
+                    </nav>                    
+
+                    <!-- Barra 3: Navegação estilo App (ícones com textos bem pequenos) -->
+                    {% comment %} <div class="d-flex justify-content-around text-center pt-1">
+                        <a href="#" class="nav-link text-primary py-0 px-2">
+                            <i class="bi bi-house-door-fill fs-5 d-block lh-1"></i>
+                            <small class="small fw-medium">Home</small>
+                        </a>
+                        <a href="{% url 'gcm_list' %}" class="nav-link text-body-secondary py-0 px-2">
+                            <i class="bi bi-people fs-5 d-block lh-1"></i>
+                            <small class="small fw-medium">GCMs</small>
+                        </a>
+                        {% if user.is_authenticated %}
+                        <a href="{% url 'account_logout' %}" class="nav-link text-danger py-0 px-2">
+                            <i class="bi bi-box-arrow-right fs-5 d-block lh-1"></i>
+                            <small class="small fw-medium">Sair</small>
+                        </a>
+                        {% else %}
+                        <a href="{% url 'account_login' %}" class="nav-link text-body-secondary py-0 px-2">
+                            <i class="bi bi-box-arrow-in-right fs-5 d-block lh-1"></i>
+                            <small class="small fw-medium">Entrar</small>
+                        </a>
+                        {% endif %}
+                    </div> {% endcomment %}
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
