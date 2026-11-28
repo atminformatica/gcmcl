@@ -155,6 +155,18 @@
             <!-- Paginação movida para dentro de #resultados-gcm para atualizar junto -->
             {% include 'components/_pagination.html' %}
         </div>
+        <!--botoes fixos final da tela-->
+        <div class="sticky-bottom bg-body border-top py-3 mt-4 d-flex justify-content-start gap-2 shadow-sm">
+            {% if perms.gcms.change_gcm %}
+                <a href="{% url 'gcm_create'%}" class="btn btn-primary">
+                    <i class="bi bi-pencil-square me-1"></i> Novo
+                </a>
+            {% endif %}
+            <a href="javascript:history.back()" class="btn btn-secondary">
+                <i class="bi bi-arrow-left me-1"></i> Voltar
+            </a>
+        </div>
     </div>
 </div>
+    
 {% endblock %}

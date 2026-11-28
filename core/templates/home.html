@@ -8,20 +8,20 @@
 <div class="container-fluid px-2 px-md-3 pb-4">
 
     <!-- Cabeçalho de Boas-Vindas -->
-    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-2 mb-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-1 mt-1 mb-1">
         <div>
-            <h1 class="fs-4 fw-bold mb-0" style="color: #1ea0ba;">
+            {% comment %} <h1 class="fs-4 fw-bold mb-0" style="color: #1ea0ba;">
                 PAINEL OPERACIONAL • GCM DIGITAL
-            </h1>
-            <small class="text-body-secondary">
+            </h1> {% endcomment %}
+            {% comment %} <small class="text-body-secondary">
                 Guarda Civil Municipal de Conselheiro Lafaiete • Bem-vindo, <strong class="text-body-emphasis">{{ request.user.username|upper }}</strong>
-            </small>
+            </small> {% endcomment %}
         </div>
 
-        <a href="{% url 'boletim_list' %}" class="btn btn-primary fw-semibold shadow-sm d-flex align-items-center gap-2">
+        {% comment %} <a href="{% url 'boletim_list' %}" class="btn btn-primary fw-semibold shadow-sm d-flex align-items-center gap-2">
             <i class="bi bi-plus-lg"></i>
             <span>Novo Boletim</span>
-        </a>
+        </a> {% endcomment %}
     </div>
 
     <!-- Atalhos Rápidos (Pensado para toque rápido no celular dentro da viatura) -->
@@ -33,7 +33,7 @@
                         <i class="bi bi-file-earmark-plus fs-4"></i>
                     </div>
                     <div>
-                        <div class="fw-bold text-body-emphasis small">Novo BO / BI</div>
+                        <div class="fw-bold text-body-emphasis small">Novo Boletim</div>
                         <div class="text-body-secondary" style="font-size: 0.72rem;">Iniciar registro</div>
                     </div>
                 </div>
