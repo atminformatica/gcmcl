@@ -25,7 +25,6 @@
             <i class="bi bi-arrow-left me-1"></i> Voltar
         </a>
     </div>
-{{ form.errors }}
     <!-- Início do Formulário Principal -->
     <form method="post" id="form-boletim" novalidate>
         {% csrf_token %}
@@ -182,46 +181,9 @@
             </div>
         </div>
 
-        {% comment %} <!-- BLOCO 6: Guarnição / Apoio (Compacto em 1 linha por card) -->
-        <div class="card bg-body-tertiary border-0 border-start border-4 shadow-sm mb-3" style="border-color: #1ea0ba !important;">
-            <div class="card-header bg-transparent border-bottom py-2 px-3 px-sm-4 w-100 d-flex justify-content-between align-items-center">
-                <h2 class="h6 fw-bold text-uppercase mb-0" style="color: #1ea0ba;">
-                    6. Guarnição
-                </h2>
-                <button type="button" class="btn btn-primary btn-sm fw-semibold text-nowrap ms-auto" data-bs-toggle="modal" data-bs-target="#modalGuarnicao">
-                    <i class="bi bi-shield-plus me-1"></i> Adicionar GCM
-                </button>
-            </div>
-            <div class="card-body p-3">
-                <div class="d-flex flex-wrap gap-2" id="lista-guarnicao">
-                    
-                    <!-- GCM Fictício 1 -->
-                    <div class="d-inline-flex align-items-center gap-2 px-2 py-1 rounded-2 bg-body border shadow-sm">
-                        <span class="fw-bold text-body-emphasis small">GCM SILVA</span>
-                        <button type="button" class="btn btn-outline-danger btn-sm py-0 px-1 border-0" title="Remover da Guarnição">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </div>
-
-                    <!-- GCM Fictício 2 -->
-                    <div class="d-inline-flex align-items-center gap-2 px-2 py-1 rounded-2 bg-body border shadow-sm">
-                        <span class="fw-bold text-body-emphasis small">GCM COSTA</span>
-                        <button type="button" class="btn btn-outline-danger btn-sm py-0 px-1 border-0" title="Remover da Guarnição">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </div>
-
-                    <!-- GCM Fictício 3 -->
-                    <div class="d-inline-flex align-items-center gap-2 px-2 py-1 rounded-2 bg-body border shadow-sm">
-                        <span class="fw-bold text-body-emphasis small">INSPETOR FERREIRA</span>
-                        <button type="button" class="btn btn-outline-danger btn-sm py-0 px-1 border-0" title="Remover da Guarnição">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </div>
-
-                </div>
-            </div>
-        </div> {% endcomment %}
+        <!-- BLOCO 6: Guarnição / Apoio (Compacto em 1 linha por card) -->
+        {% include 'partials/lista_guarnicao.html' %}
+       
 
         <!-- BLOCO 7: Efetivo (Relator, Coordenação) e Autoridade -->
         <div class="card bg-body-tertiary border-0 border-start border-4 shadow-sm mb-3" style="border-color: #1ea0ba !important;">
@@ -286,17 +248,20 @@
         <div class="fixed-bottom bg-body-tertiary border-top shadow-lg py-2 px-3" style="z-index: 1030;">
             <div class="container-fluid d-flex justify-content-between align-items-center gap-2">
                 <!-- Botão Cancelar / Sair -->
-                <button type="button" class="btn btn-outline-danger btn-sm fw-semibold"
-                        onclick="return confirm('Deseja cancelar/sair desta edição?');">
+                <button type="button" 
+                        class="btn btn-outline-danger btn-sm fw-semibold"
+                        hx-post="{% url 'boletim_cancelar' object.pk %}"
+                        {% comment %} hx-confirm="Deseja cancelar/sair ?" {% endcomment %}
+                    >
                     <i class="bi bi-x-lg me-1"></i> Cancelar
                 </button>
+
 
                 <div class="d-flex gap-2">
                     <!-- Salvar Rascunho (mantém EM_ANDAMENTO) -->
                     <button type="submit" name="acao" value="rascunho" class="btn btn-warning btn-sm fw-semibold text-dark">
                         <i class="bi bi-save me-1"></i> Salvar Rascunho
                     </button>
-
                     <!-- Finalizar Boletim (muda para FINALIZADA) -->
                     <button type="submit" name="acao" value="finalizar" class="btn btn-success btn-sm fw-semibold"
                             onclick="return confirm('Após finalizar, o boletim não poderá mais ser editado. Confirma?');">

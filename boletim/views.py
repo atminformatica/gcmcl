@@ -1,15 +1,18 @@
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, UpdateView, DeleteView
 from . import models, forms
+from gcms.models import Gcm
 from django.http import HttpResponse
 from django.contrib.auth.models import User 
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.db.models import Q
+from django.shortcuts import render, get_object_or_404
 
 from django.views import View
 from django.shortcuts import redirect, get_object_or_404
 from django.utils import timezone
 from django.contrib import messages
+from django.urls import reverse
 
 class BoletimListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = models.Boletim
@@ -147,7 +150,7 @@ class BoletimUpdateView(LoginRequiredMixin, UpdateView):
             form.instance.status = 'FINALIZADA'
             messages.success(self.request, 'Boletim finalizado com sucesso!')
             super().form_valid(form)
-            return redirect('boletim_detail', pk=self.object.pk)
+            return redirect('boletim_list', pk=self.object.pk)
 
         # Se clicou em "Salvar Rascunho"
         form.instance.status = 'EM_ANDAMENTO'
@@ -177,4 +180,72 @@ class BoletimCancelarView(LoginRequiredMixin, View):
             boletim.delete()
             messages.info(request, 'Boletim vazio foi descartado.')
 
-        return redirect('boletim:boletim_list')
+        response = HttpResponse(status=204)
+        response['HX-Redirect'] = reverse('boletim_list')
+        return response
+
+
+class BoletimGuarnicaoModalView(LoginRequiredMixin, View):
+    """Carrega o conteúdo do modal e também responde à busca em tempo real."""
+    def get(self, request, pk, *args, **kwargs):
+        boletim = get_object_or_404(models.Boletim, pk=pk)
+        termo = request.GET.get('q', '').strip()
+
+        # Busca GCMs ativos (ajuste o filtro se seu model Gcm tiver campo 'ativo')
+        gcms = Gcm.objects.all().order_by('nome_guerra')
+
+        if termo:
+            gcms = gcms.filter(
+                Q(nome_guerra__icontains=termo) |
+                Q(nome__icontains=termo) |
+                Q(matricula__icontains=termo)
+            )
+
+        # Limita a 20 resultados para ficar rápido no celular
+        gcms = gcms[:20]
+        ids_na_guarnicao = set(boletim.guarnicao.values_list('id', flat=True))
+
+        context = {
+            'boletim': boletim,
+            'gcms': gcms,
+            'ids_na_guarnicao': ids_na_guarnicao,
+            'termo': termo,
+        }
+
+        # Se a requisição veio do input de busca dentro do modal, retorna só a tabela
+                # Troque o if do HX-Target por este:
+        if 'q' in request.GET:
+            return render(request, 'partials/tabela_busca_guarnicao.html', context)
+
+        # if request.headers.get('HX-Target') == 'tabela-resultados-guarnicao':
+        #     return render(request, 'partials/tabela_busca_guarnicao.html', context)
+
+        return render(request, 'partials/modal_guarnicao.html', context)
+
+
+class BoletimGuarnicaoAdicionarView(LoginRequiredMixin, View):
+    permission_required = 'boletim.change_boletim'
+    """Adiciona o GCM ao boletim e atualiza tanto o botão no modal quanto a lista na tela principal."""
+    def post(self, request, pk, gcm_id, *args, **kwargs):
+        boletim = get_object_or_404(models.Boletim, pk=pk)
+        gcm = get_object_or_404(Gcm, pk=gcm_id)
+
+        boletim.guarnicao.add(gcm)
+
+        context = {
+            'boletim': boletim,
+            'gcm': gcm,
+            'ja_adicionado': True,
+        }
+        return render(request, 'partials/resposta_adicionar_guarnicao.html', context)
+
+
+class BoletimGuarnicaoRemoverView(LoginRequiredMixin, View):
+    """Remove o GCM do boletim e atualiza a lista e o contador na tela principal."""
+    def post(self, request, pk, gcm_id, *args, **kwargs):
+        boletim = get_object_or_404(models.Boletim, pk=pk)
+        gcm = get_object_or_404(Gcm, pk=gcm_id)
+
+        boletim.guarnicao.remove(gcm)
+
+        return render(request, 'partials/lista_guarnicao.html', {'object': boletim})

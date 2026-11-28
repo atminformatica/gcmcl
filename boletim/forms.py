@@ -249,8 +249,11 @@ class BoletimForm(forms.ModelForm):
         }
 
     def clean_numero_boletim(self):
-        numero = self.cleaned_data.get('numero_boletim', '')
-        return numero.strip().upper()
+        numero = self.cleaned_data.get('numero_boletim')
+        if numero:
+            numero_limpo = numero.strip().upper()
+            return numero_limpo if numero_limpo else None
+        return None
 
     def clean_numero_reds(self):
         reds = self.cleaned_data.get('numero_reds')

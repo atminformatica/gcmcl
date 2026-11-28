@@ -1,0 +1,27 @@
+<!-- Barra de Pesquisa no topo do Modal -->
+<div class="mb-3">
+    <label for="busca-gcm-modal" class="form-label small text-body-secondary fw-semibold">
+        Pesquisar GCM por [ Nome de Guerra, Nome Completo ou Matrícula ]
+    </label>
+    <div class="input-group">
+        <span class="input-group-text bg-body-tertiary">
+            <i class="bi bi-search"></i>
+        </span>
+        <input type="text"
+               id="busca-gcm-modal"
+               name="q"
+               class="form-control"
+               placeholder="Digite para filtrar..."
+               value="{{ termo }}"
+               autofocus
+               hx-get="{% url 'boletim_guarnicao_modal' boletim.pk %}"
+               hx-trigger="keyup changed delay:300ms"
+               hx-target="#tabela-resultados-guarnicao"
+               hx-swap="innerHTML">
+    </div>
+</div>
+
+<!-- Área onde a lista/tabela de resultados é carregada -->
+<div id="tabela-resultados-guarnicao">
+    {% include 'partials/tabela_busca_guarnicao.html' %}
+</div>

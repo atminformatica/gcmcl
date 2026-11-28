@@ -1,0 +1,61 @@
+{% if gcms %}
+    <div class="table-responsive border rounded">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light small text-uppercase">
+                <tr>
+                    <th>Nome de Guerra</th>
+                    <th class="d-none d-sm-table-cell">Nome Completo</th>
+                    <th class="d-none d-md-table-cell">Matrícula</th>
+                    <th class="text-end" style="width: 130px;">Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for gcm in gcms %}
+                <tr>
+                    <td class="fw-bold text-body-emphasis">
+                        <!-- No celular (d-sm-none), mostra o Nome Completo acima -->
+                        <div class="d-sm-none small text-body-secondary mb-1">
+                            {{ gcm.nome }}
+                        </div>
+
+                        <div class="fw-bold text-body-emphasis">
+                            {{ gcm.nome_guerra }}
+                        </div>
+
+                        <!-- No celular/tablet (d-md-none), mostra a Matrícula abaixo -->
+                        <div class="d-md-none small text-body-secondary fw-normal font-monospace">
+                            Mat: {{ gcm.matricula }}
+                        </div>
+                    </td>
+                    <td class="d-none d-sm-table-cell small text-body-secondary">
+                        {{ gcm.nome }}
+                    </td>
+                    <td class="d-none d-md-table-cell small font-monospace">
+                        {{ gcm.matricula }}
+                    </td>
+                    <td class="text-end">
+                        {% if gcm.id in ids_na_guarnicao %}
+                            <span class="badge bg-success-subtle text-success-emphasis border border-success-subtle py-2 px-2">
+                                <i class="bi bi-check-lg me-1"></i> Adicionado
+                            </span>
+                        {% else %}
+                            <button type="button"
+                                    class="btn btn-primary btn-sm fw-semibold text-nowrap"
+                                    hx-post="{% url 'boletim_guarnicao_adicionar' boletim.pk gcm.id %}"
+                                    hx-swap="outerHTML">
+                                <i class="bi bi-plus-lg me-1"></i> Adicionar
+                            </button>
+                            {% comment %} hx-swap="outerHTML": Como não há um hx-target definido neste botão, o HTMX entende que o alvo é o próprio botão. O valor outerHTML diz para o HTMX pegar o HTML que o Django devolver e substituir a tag <button> inteira por esse novo conteúdo. {% endcomment %}
+
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div class="text-center py-4 border rounded bg-body-tertiary">
+        <p class="small text-body-secondary mb-0">Nenhum GCM encontrado para "{{ termo }}".</p>
+    </div>
+{% endif %}
